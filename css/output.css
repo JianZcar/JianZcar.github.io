@@ -558,6 +558,10 @@ video {
   display: flex;
 }
 
+.grid {
+  display: grid;
+}
+
 .w-max {
   width: -moz-max-content;
   width: max-content;
@@ -565,6 +569,10 @@ video {
 
 .w-full {
   width: 100%;
+}
+
+.grid-cols-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .flex-row {
