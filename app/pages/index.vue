@@ -144,12 +144,15 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col relative select-none selection:bg-emerald-500 selection:text-black">
-    <!-- Decorative Matrix Scanline effect on absolute background -->
-    <div class="absolute inset-0 scanlines pointer-events-none opacity-[0.03]"></div>
+  <div class="min-h-screen text-zinc-100 flex flex-col relative select-none selection:bg-emerald-500 selection:text-black">
+    <ShaderBackground />
+    
+    <div class="relative z-10 flex-1 flex flex-col">
+      <!-- Decorative Matrix Scanline effect on absolute background -->
+      <div class="absolute inset-0 scanlines pointer-events-none opacity-[0.03]"></div>
 
-    <!-- Header telemetry & Custom Nav Section -->
-    <header class="border-b border-zinc-900 px-6 py-4 flex items-center justify-between relative z-10 bg-zinc-950/80 backdrop-blur">
+      <!-- Header telemetry & Custom Nav Section -->
+      <header class="border-b border-zinc-900 px-6 py-4 flex items-center justify-between relative z-10 bg-zinc-950/40 backdrop-blur">
       <div class="flex items-center space-x-6">
         <div class="flex items-center space-x-2">
           <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
@@ -173,13 +176,13 @@ onUnmounted(() => {
     </header>
 
     <!-- Main stacked layout -->
-    <main class="flex-1 flex flex-col relative z-10 max-w-5xl w-full mx-auto px-4 md:px-8 py-8 space-y-8">
+    <main class="flex-1 flex flex-col relative z-10 max-w-5xl w-full mx-auto px-4 md:px-8 py-8 space-y-12">
       
       <!-- TOP SECTION: Biography & Capabilities -->
-      <section class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+      <section class="grid grid-cols-1 md:grid-cols-12 gap-12 items-start">
         
-        <!-- Left Side: Bio Info & Core Technologies -->
-        <div class="md:col-span-5 space-y-6">
+        <!-- Left Side: Bio Info -->
+        <div class="md:col-span-7 space-y-6">
           <div>
             <div class="font-mono-tech text-emerald-400 text-xs tracking-wider uppercase mb-3 flex items-center space-x-2">
               <span>// IDENTITY ENVELOPE</span>
@@ -187,31 +190,22 @@ onUnmounted(() => {
               <span>JIAN_ZCAR</span>
             </div>
 
-            <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-3">
+            <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-2">
               Jian Z'car
             </h1>
-            <p class="font-mono-tech text-zinc-400 text-xs md:text-sm leading-relaxed">
-              Specialized systems engineer specializing in container-native Linux systems and designing high-performance, lightweight web deployment structures.
-            </p>
-          </div>
-
-          <!-- Quick telemetry parameters -->
-          <div class="grid grid-cols-2 gap-4 border border-zinc-900 rounded-lg p-4 bg-zinc-900/10 font-mono-tech text-[11px]">
-            <div>
-              <span class="block text-zinc-600 mb-0.5">CURRENT STACK</span>
-              <span class="text-zinc-300">Nuxt.js & Flask</span>
-            </div>
-            <div>
-              <span class="block text-zinc-600 mb-0.5">CONTAINERS</span>
-              <span class="text-emerald-400">Podman & MKOSI</span>
-            </div>
-            <div>
-              <span class="block text-zinc-600 mb-0.5">LANGUAGES</span>
-              <span class="text-zinc-300">Bash, Python, JS, TS</span>
-            </div>
-            <div>
-              <span class="block text-zinc-600 mb-0.5">STYLES / CSS</span>
-              <span class="text-emerald-400">Tailwind & SCSS</span>
+            <h2 class="font-mono-tech text-emerald-400 text-sm md:text-base mb-4 font-bold">
+              Systems Engineer & Full-Stack Developer
+            </h2>
+            <div class="font-mono-tech text-zinc-400 text-xs md:text-sm leading-relaxed space-y-4">
+              <p>
+                I operate at the intersection of low-level infrastructure and modern web development, managing the entire pipeline from code to production.
+              </p>
+              <p>
+                My expertise is split into two distinct strengths. On the systems side, I architect immutable, container-native Linux configurations and build automated CI/CD pipelines designed to make deployments completely friction-free. On the web side, I engineer standalone, high-performance full-stack applications built for scalability and clean user experiences.
+              </p>
+              <p>
+                Because I understand both the operating system layer and the application layer, I don't just write code—I ensure it is secure, optimized, and built to scale predictably in production environments.
+              </p>
             </div>
           </div>
 
@@ -233,20 +227,20 @@ onUnmounted(() => {
           </div>
         </div>
 
-        <!-- Right Side: Capabilities Matrix -->
-        <div class="md:col-span-7 space-y-6">
+        <!-- Right Side: Technical Matrix & Current Stack -->
+        <div class="md:col-span-5 space-y-8">
+          <!-- Capabilities Matrix -->
           <div class="space-y-4">
             <h2 class="font-mono-tech text-xs text-zinc-600 uppercase tracking-widest flex items-center space-x-2">
               <span>[01] FULLSTACK & WEB CAPABILITIES</span>
-              <span class="h-[1px] bg-zinc-900 flex-1" />
             </h2>
 
-            <div class="border border-zinc-900 p-5 rounded-lg bg-zinc-900/5 hover:border-zinc-800 transition-all space-y-4">
-              <p class="font-mono-tech text-xs text-zinc-400 leading-relaxed">
+            <div class="border border-zinc-900 p-5 rounded-lg bg-zinc-950/40 backdrop-blur-md hover:border-zinc-800 transition-all space-y-4">
+              <p class="font-mono-tech text-[11px] text-zinc-400 leading-relaxed">
                 I focus on writing minimal, high-efficiency system configurations, combined with intuitive full-stack web systems. I prefer simpler, highly modular architectures that deploy quickly and scale easily.
               </p>
 
-              <div class="grid grid-cols-2 gap-4 font-mono-tech text-[11px]">
+              <div class="grid grid-cols-1 gap-4 font-mono-tech text-[11px]">
                 <div>
                   <span class="text-zinc-500 block mb-1">FRONTEND LAYER</span>
                   <ul class="space-y-1 text-zinc-300">
@@ -266,6 +260,31 @@ onUnmounted(() => {
               </div>
             </div>
           </div>
+
+          <!-- Quick telemetry parameters (CURRENT STACK) -->
+          <div class="space-y-4">
+            <h2 class="font-mono-tech text-xs text-zinc-600 uppercase tracking-widest flex items-center space-x-2">
+              <span>[02] CURRENT STACK TELEMETRY</span>
+            </h2>
+            <div class="grid grid-cols-2 gap-4 border border-zinc-900 rounded-lg p-4 bg-zinc-950/40 backdrop-blur-md font-mono-tech text-[11px]">
+              <div>
+                <span class="block text-zinc-600 mb-0.5">CURRENT STACK</span>
+                <span class="text-zinc-300">Nuxt.js & Flask</span>
+              </div>
+              <div>
+                <span class="block text-zinc-600 mb-0.5">CONTAINER</span>
+                <span class="text-emerald-400">Podman</span>
+              </div>
+              <div>
+                <span class="block text-zinc-600 mb-0.5">LANGUAGES</span>
+                <span class="text-zinc-300">Bash, Python, JS, TS</span>
+              </div>
+              <div>
+                <span class="block text-zinc-600 mb-0.5">STYLES</span>
+                <span class="text-emerald-400">Tailwind & SASS</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -280,7 +299,7 @@ onUnmounted(() => {
           <!-- Project: Zena -->
           <div 
             @click="triggerPipeline('zena')" 
-            :class="['group relative p-5 rounded-lg border transition-all cursor-pointer flex flex-col justify-between', activePipeline === 'zena' ? 'border-emerald-500/50 bg-zinc-900/30' : 'border-zinc-900 hover:border-zinc-800 hover:bg-zinc-900/10']"
+            :class="['group relative p-5 rounded-lg border transition-all cursor-pointer flex flex-col justify-between backdrop-blur-md', activePipeline === 'zena' ? 'border-emerald-500/50 bg-emerald-500/5' : 'border-zinc-900 bg-zinc-950/40 hover:border-zinc-800 hover:bg-zinc-950/60']"
           >
             <div>
               <div class="flex items-center justify-between mb-2">
@@ -317,7 +336,7 @@ onUnmounted(() => {
           <!-- Project: FuzPad -->
           <div 
             @click="triggerPipeline('fuzpad')" 
-            :class="['group relative p-5 rounded-lg border transition-all cursor-pointer flex flex-col justify-between', activePipeline === 'fuzpad' ? 'border-emerald-500/50 bg-zinc-900/30' : 'border-zinc-900 hover:border-zinc-800 hover:bg-zinc-900/10']"
+            :class="['group relative p-5 rounded-lg border transition-all cursor-pointer flex flex-col justify-between backdrop-blur-md', activePipeline === 'fuzpad' ? 'border-emerald-500/50 bg-emerald-500/5' : 'border-zinc-900 bg-zinc-950/40 hover:border-zinc-800 hover:bg-zinc-950/60']"
           >
             <div>
               <div class="flex items-center justify-between mb-2">
@@ -354,7 +373,7 @@ onUnmounted(() => {
           <!-- Project: Zerith -->
           <div 
             @click="triggerPipeline('zerith')" 
-            :class="['group relative p-5 rounded-lg border transition-all cursor-pointer flex flex-col justify-between', activePipeline === 'zerith' ? 'border-emerald-500/50 bg-zinc-900/30' : 'border-zinc-900 hover:border-zinc-800 hover:bg-zinc-900/10']"
+            :class="['group relative p-5 rounded-lg border transition-all cursor-pointer flex flex-col justify-between backdrop-blur-md', activePipeline === 'zerith' ? 'border-emerald-500/50 bg-emerald-500/5' : 'border-zinc-900 bg-zinc-950/40 hover:border-zinc-800 hover:bg-zinc-950/60']"
           >
             <div>
               <div class="flex items-center justify-between mb-2">
@@ -386,7 +405,7 @@ onUnmounted(() => {
           <!-- Project: Dorrafy -->
           <div 
             @click="triggerPipeline('dorrafy')" 
-            :class="['group relative p-5 rounded-lg border transition-all cursor-pointer flex flex-col justify-between opacity-75', activePipeline === 'dorrafy' ? 'border-emerald-500/50 bg-zinc-900/30' : 'border-zinc-900 hover:border-zinc-800 hover:bg-zinc-900/10']"
+            :class="['group relative p-5 rounded-lg border transition-all cursor-pointer flex flex-col justify-between opacity-75 backdrop-blur-md', activePipeline === 'dorrafy' ? 'border-emerald-500/50 bg-emerald-500/5' : 'border-zinc-900 bg-zinc-950/40 hover:border-zinc-800 hover:bg-zinc-950/60']"
           >
             <div>
               <div class="flex items-center justify-between mb-2">
@@ -419,7 +438,7 @@ onUnmounted(() => {
 
       <!-- BOTTOM SECTION: Anchor Telemetry Terminal Container (Height exact 10 lines, isolated scroll) -->
       <section class="w-full pt-4">
-        <div class="border border-zinc-900 rounded-xl overflow-hidden bg-zinc-900/10 backdrop-blur flex flex-col">
+        <div class="border border-zinc-900 rounded-xl overflow-hidden bg-zinc-950/40 backdrop-blur-md flex flex-col">
           <!-- Panel Header -->
           <div class="bg-zinc-950 border-b border-zinc-900 px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div class="flex items-center space-x-3">
@@ -484,10 +503,36 @@ onUnmounted(() => {
           </div>
         </div>
       </section>
+
+      <!-- EXTRA SECTION: Extra Skills & Contributions -->
+      <section class="space-y-4 pt-4">
+        <h2 class="font-mono-tech text-xs text-zinc-600 uppercase tracking-widest flex items-center space-x-2">
+          <span>[04] EXTRA SKILLS & CONTRIBUTIONS</span>
+          <span class="h-[1px] bg-zinc-900 flex-1" />
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="border border-zinc-900 p-5 rounded-lg bg-zinc-950/40 backdrop-blur-md font-mono-tech text-[11px]">
+            <span class="text-zinc-500 block mb-1 uppercase">Open Source Work</span>
+            <ul class="space-y-1 text-zinc-400">
+              <li>• Active repository maintenance & automation</li>
+              <li>• Managing public documentation & project wikis</li>
+              <li>• Direct contribution to community-driven features</li>
+            </ul>
+          </div>
+          <div class="border border-zinc-900 p-5 rounded-lg bg-zinc-950/40 backdrop-blur-md font-mono-tech text-[11px]">
+            <span class="text-zinc-500 block mb-1 uppercase">User Support & Maintenance</span>
+            <ul class="space-y-1 text-zinc-400">
+              <li>• Providing direct support & troubleshooting for my projects</li>
+              <li>• Handling release management & user feedback cycles</li>
+              <li>• Technical research & active community presence</li>
+            </ul>
+          </div>
+        </div>
+      </section>
     </main>
 
     <!-- Ticker bottom system footer -->
-    <footer class="border-t border-zinc-900 bg-zinc-950 px-6 py-4 flex flex-col md:flex-row items-center justify-between text-xs text-zinc-600 font-mono-tech relative z-10">
+    <footer class="border-t border-zinc-900 bg-zinc-950/40 backdrop-blur px-6 py-4 flex flex-col md:flex-row items-center justify-between text-xs text-zinc-600 font-mono-tech relative z-10">
       <div>
         <span>Jian Z'car Esteban. System automated deployments.</span>
       </div>
@@ -497,10 +542,15 @@ onUnmounted(() => {
         <span>STAGES: NO_ERRORS</span>
       </div>
     </footer>
+    </div>
   </div>
 </template>
 
 <style scoped>
+:global(body) {
+  background-color: transparent !important;
+}
+
 .scanlines {
   background: linear-gradient(
     rgba(18, 16, 16, 0) 50%, 
