@@ -25,7 +25,6 @@ export default defineNuxtConfig({
     }
   },
   app: {
-    baseURL: '/',
-    pageTransition: { name: 'page', mode: 'out-in', duration: 500 }
+    baseURL: '/'
   }
 })

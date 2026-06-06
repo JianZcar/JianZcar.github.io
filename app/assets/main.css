@@ -2,9 +2,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
 @plugin "@tailwindcss/typography";
 @plugin "tailwindcss-motion";
-@plugin "daisyui" {
-  themes: aqua --default, aqua --prefersdark;
-}
 
 body {
   font-family: 'Plus Jakarta Sans', sans-serif;
@@ -30,14 +27,4 @@ body {
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #3f3f46;
-}
-
-.page-leave-to,
-.page-leave-active {
-  @apply motion-opacity-out-0 -motion-translate-y-out-100 motion-blur-out-sm motion-duration-500
-}
-
-.page-enter-from,
-.page-enter-active {
-  @apply motion-opacity-in-0 motion-translate-y-in-100 motion-blur-in-sm motion-duration-500
 }
