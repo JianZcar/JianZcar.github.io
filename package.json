@@ -1,0 +1,28 @@
+{
+  "name": "JianZcar-github-io",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview"
+  },
+  "overrides": {
+    "serialize-javascript": ">=7.0.4"
+  },
+  "dependencies": {
+    "@nuxt/content": "^3.12.0",
+    "@nuxt/icon": "^2.2.1",
+    "@nuxtjs/color-mode": "^4.0.0",
+    "@tailwindcss/vite": "^4.2.1",
+    "better-sqlite3": "^12.6.2",
+    "nuxt": "^4.3.1",
+    "tailwindcss": "^4.2.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.19",
+    "daisyui": "^5.5.19",
+    "tailwindcss-motion": "^1.1.1"
+  }
+}
