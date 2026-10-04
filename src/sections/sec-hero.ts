@@ -32,7 +32,21 @@ export class SecHero extends LitElement {
             <div
               class="max-w-96 after:max-w-96 sm:max-w-192 after:sm:max-w-192 after:content-[''] bg-[radial-gradient(circle,white_0%,white_5%,#c6e0ff_70%,#c6e0ff_100%)] after:absolute after:inset-0 after:bg-[radial-gradient(circle,transparent_0%,transparent_5%,#c6e0ff_70%,#c6e0ff_100%)]"
             >
-              <img src="/img/my-pic.png" alt="my-pic" class="opacity-60" />
+              <img
+                src="/img/my-pic-768.webp"
+                srcset="
+                  /img/my-pic-384.webp   384w,
+                  /img/my-pic-768.webp   768w,
+                  /img/my-pic-1024.webp 1024w
+                "
+                sizes="(min-width: 1280px) 496px, (min-width: 640px) 45vw, 100vw"
+                width="768"
+                height="768"
+                alt=""
+                fetchpriority="high"
+                decoding="async"
+                class="block h-auto w-full opacity-60"
+              />
             </div>
             <div
               class=" absolute px-16 flex flex-col gap-2 font-syncopate text-3xl md:text-5xl mix-blend-multiply"
@@ -40,10 +54,10 @@ export class SecHero extends LitElement {
               <h1 class="text-#2978A0">BUILD</h1>
               <h1 class="text-#9AD5CA">AUTOMATE</h1>
               <h1 class="text-#253031">DEPLOY</h1>
-              <h3 class="text-#253031 text-lg md:text-2xl">
+              <h2 class="text-#253031 text-lg md:text-2xl">
                 <strong class="text-#4fa3ab">YOUR</strong>
                 <el-scrolling-word class="italic"></el-scrolling-word>
-              </h3>
+              </h2>
             </div>
           </div>
           <div class="px-16 flex flex-col justify-center">

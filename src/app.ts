@@ -1,4 +1,3 @@
-import "./global.css";
 import { Router } from "@lit-labs/router";
 import { css, html, LitElement } from "lit";
 import { customElement } from "lit/decorators.js";

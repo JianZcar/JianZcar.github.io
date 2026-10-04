@@ -1,6 +1,18 @@
-import converse, { type Builder } from "@converse/headless";
+import type { Builder } from "@converse/headless";
 import { css, html, LitElement, render } from "lit";
 import { customElement } from "lit/decorators.js";
+
+type ConverseModule = typeof import("@converse/headless").default;
+
+let converseModule: ConverseModule | undefined;
+
+const getConverse = (): ConverseModule => {
+  if (!converseModule) {
+    throw new Error("Chat client is not loaded yet");
+  }
+
+  return converseModule;
+};
 
 const XMPP_DOMAIN = "xmpp-anon.jianzcar.com.de";
 const XMPP_WS = "wss://xmpp-anon.jianzcar.com.de:5281/xmpp-websocket";
@@ -156,7 +168,10 @@ export class Chat extends LitElement {
           >
             <div class="relative shrink-0">
               <img
-                src="https://api.dicebear.com/9.x/initials/svg?seed=JianZcar"
+                src="/img/pfp-80.webp"
+                width="80"
+                height="80"
+                decoding="async"
                 class="h-10 w-10 rounded-full border border-white/80 bg-[#ccdde2] object-cover"
                 alt="Avatar"
               />
@@ -229,10 +244,9 @@ export class Chat extends LitElement {
               <input
                 name="company"
                 type="text"
-                required
                 maxlength="150"
                 autocomplete="organization"
-                placeholder="Company / Organization"
+                placeholder="Company / Organization (optional)"
                 class="w-full rounded-xl border border-[#315659]/15 bg-white/60 px-3 py-2.5 text-sm text-[#253031] outline-none placeholder:text-[#315659]/50 focus:border-[#2978a0]/40 focus:ring-2 focus:ring-[#2978a0]/10"
               />
 
@@ -388,7 +402,7 @@ export class Chat extends LitElement {
 
     const message = String(data.get("message") || "").trim();
 
-    if (!visitor.name || !visitor.email || !visitor.company || !message) {
+    if (!visitor.name || !visitor.email || !message) {
       return;
     }
 
@@ -415,6 +429,10 @@ export class Chat extends LitElement {
     const self = this;
 
     try {
+      converseModule ??= (await import("@converse/headless")).default;
+
+      const converse = getConverse();
+
       converse.plugins.add("portfolio-chat", {
         initialize(this: {
           _converse: {
@@ -520,7 +538,7 @@ export class Chat extends LitElement {
     const contactDetails = [
       `Name: ${name}`,
       `Email: ${email}`,
-      `JID: ${jid || "Not provided"}`,
+      `JID: ${jid}`,
       `Company: ${company}`,
       "",
       "Message:",
@@ -728,7 +746,7 @@ export class Chat extends LitElement {
       el.dataset.state = "read";
 
       el.className =
-        "message-meta mt-0.5 flex justify-end text-[10px] text-[#9ad5ca]";
+        "message-meta mt-0.5 flex justify-end text-[10px] text-white";
 
       render(DOUBLE_CHECK, el);
     }
@@ -766,7 +784,7 @@ export class Chat extends LitElement {
     this._addMessage(text, false, id);
     this._typing.classList.add("hidden");
 
-    const { $msg } = converse.env;
+    const { $msg } = getConverse().env;
 
     this._connection!.send(
       $msg({
@@ -812,8 +830,8 @@ export class Chat extends LitElement {
     if (!this._connected) return;
 
     this._connection!.send(
-      converse.env
-        .$msg({
+      getConverse()
+        .env.$msg({
           to: PERSONAL_JID,
           type: "chat",
         })
@@ -828,8 +846,8 @@ export class Chat extends LitElement {
 
     const id = crypto.randomUUID();
 
-    const stanza = converse.env
-      .$msg({
+    const stanza = getConverse()
+      .env.$msg({
         to: PERSONAL_JID,
         type: "chat",
         id,
