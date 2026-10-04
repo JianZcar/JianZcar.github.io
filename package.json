@@ -1,0 +1,32 @@
+{
+  "name": "jianzcar.github.io",
+  "module": "src/app.ts",
+  "main": "src/app.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "start": "bun run src/app.ts",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.13",
+    "@types/bun": "latest",
+    "@types/node": "^26.5.1",
+    "@unocss/preset-wind4": "^66.10.2",
+    "puppeteer": "^25.11.0",
+    "unocss": "^66.10.2",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.0"
+  },
+  "peerDependencies": {
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "@lit-labs/router": "^0.1.4",
+    "@lit/context": "^1.1.6",
+    "@converse/headless": "^14.0.0",
+    "lit": "^3.3.3"
+  }
+}
