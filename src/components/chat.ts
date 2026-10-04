@@ -2,6 +2,8 @@ import type { Builder } from "@converse/headless";
 import { css, html, LitElement, render } from "lit";
 import { customElement } from "lit/decorators.js";
 
+import { SCROLLBAR_STYLES } from "./scrollbar";
+
 type ConverseModule = typeof import("@converse/headless").default;
 
 let converseModule: ConverseModule | undefined;
@@ -126,13 +128,16 @@ const MINIMIZE = html`
 
 @customElement("el-chat")
 export class Chat extends LitElement {
-  static override styles = css`
-    :host {
-      display: contents;
-    }
+  static override styles = [
+    SCROLLBAR_STYLES,
+    css`
+      :host {
+        display: contents;
+      }
 
-    @unocss-placeholder;
-  `;
+      @unocss-placeholder;
+    `,
+  ];
 
   private _connection: ChatConnection | null = null;
   private _connected = false;
