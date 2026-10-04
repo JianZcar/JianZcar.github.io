@@ -1,5 +1,5 @@
 import converse, { type Builder } from "@converse/headless";
-import { css, html, LitElement } from "lit";
+import { css, html, LitElement, render } from "lit";
 import { customElement } from "lit/decorators.js";
 
 const XMPP_DOMAIN = "xmpp-anon.jianzcar.com.de";
@@ -16,23 +16,99 @@ type ChatConnection = {
 };
 
 type ConverseApi = {
-  connection: { get: () => ChatConnection | null };
-  listen: { on: (event: string, callback: () => void) => void };
+  connection: {
+    get: () => ChatConnection | null;
+  };
+  listen: {
+    on: (event: string, callback: () => void) => void;
+  };
 };
 
-const SINGLE_CHECK = `
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-    stroke-width="2.5" class="h-3.5 w-3.5">
-    <path stroke-linecap="round" stroke-linejoin="round"
-      d="M4.5 12.75l6 6 9-13.5" />
-  </svg>`;
+const SINGLE_CHECK = html`
+  <svg
+    width="1.5em"
+    height="1.5em"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M5 12l5 5l10 -10" />
+  </svg>
+`;
 
-const DOUBLE_CHECK = `
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-    stroke-width="2.5" class="h-3.5 w-3.5">
-    <path stroke-linecap="round" stroke-linejoin="round"
-      d="M2 13l5 5L18 6M8 13l5 5L22 6" />
-  </svg>`;
+const DOUBLE_CHECK = html`
+  <svg
+    width="1.5em"
+    height="1.5em"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M7 12l5 5l10 -10" />
+    <path d="M2 12l5 5m5 -5l5 -5" />
+  </svg>
+`;
+
+const CHAT = html`
+  <svg
+    width="1.5em"
+    height="1.5em"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path
+      d="M3 20l1.3 -3.9c-2.324 -3.437 -1.426 -7.872 2.1 -10.374c3.526 -2.501 8.59 -2.296 11.845 .48c3.255 2.777 3.695 7.266 1.029 10.501c-2.666 3.235 -7.615 4.215 -11.574 2.293l-4.7 1"
+    />
+  </svg>
+`;
+
+const SEND = html`
+  <svg
+    width="1.5em"
+    height="1.5em"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path
+      d="M4.698 4.034l16.302 7.966l-16.302 7.966a.503 .503 0 0 1 -.546 -.124a.555 .555 0 0 1 -.12 -.568l2.468 -7.274l-2.468 -7.274a.555 .555 0 0 1 .12 -.568a.503 .503 0 0 1 .546 -.124"
+    />
+    <path d="M6.5 12h14.5" />
+  </svg>
+`;
+
+const MINIMIZE = html`
+  <svg
+    width="1.5em"
+    height="1.5em"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+    <path d="M4 11l8 3l8 -3" />
+  </svg>
+`;
 
 @customElement("el-chat")
 export class Chat extends LitElement {
@@ -45,136 +121,131 @@ export class Chat extends LitElement {
   `;
 
   private _connection: ChatConnection | null = null;
-
   private _connected = false;
 
+  private _chat!: HTMLElement;
+  private _minimizedButton!: HTMLButtonElement;
   private _messages!: HTMLElement;
-
   private _input!: HTMLTextAreaElement;
-
   private _send!: HTMLButtonElement;
-
   private _status!: HTMLElement;
-
   private _statusDot!: HTMLElement;
-
   private _typing!: HTMLElement;
 
-  private _chatBody!: HTMLElement;
-
   private _sentMessages = new Map<string, HTMLElement>();
-
   private _messageElements = new Map<string, HTMLElement>();
 
   private _lastReadMessageId: string | null = null;
 
   override render() {
     return html`
-      <div
-        id="chat"
-        class="fixed bottom-5 right-5 z-50 w-[380px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl border border-white/10 bg-zinc-950/90 text-white shadow-2xl backdrop-blur-xl"
-      >
-        <header
-          class="flex h-16 items-center gap-3 border-b border-white/10 px-4 select-none"
+      <div class="fixed bottom-5 right-5 z-50 pointer-events-none">
+        <!-- Full chat -->
+        <div
+          id="chat"
+          class="w-[380px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl border border-white/10 bg-zinc-950/90 text-white shadow-2xl backdrop-blur-xl origin-bottom-right opacity-0 scale-95 translate-y-2 pointer-events-none transition-all duration-300 ease-out"
         >
-          <div class="relative shrink-0">
-            <img
-              src="https://api.dicebear.com/9.x/initials/svg?seed=JianZcar"
-              class="h-10 w-10 rounded-full bg-zinc-800 object-cover"
-              alt="Avatar"
-            />
+          <header
+            class="flex h-16 items-center gap-3 border-b border-white/10 px-4 select-none"
+          >
+            <div class="relative shrink-0">
+              <img
+                src="https://api.dicebear.com/9.x/initials/svg?seed=JianZcar"
+                class="h-10 w-10 rounded-full bg-zinc-800 object-cover"
+                alt="Avatar"
+              />
 
-            <span
-              id="status-dot"
-              class="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-zinc-950 bg-zinc-500"
-            ></span>
-          </div>
-
-          <div class="min-w-0 flex-1">
-            <div class="truncate text-sm font-medium">JianZcar</div>
-            <div id="status" class="truncate text-xs text-zinc-400">
-              Connecting...
+              <span
+                id="status-dot"
+                class="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-zinc-950 bg-zinc-500"
+              ></span>
             </div>
-          </div>
 
-          <button
-            id="minimize"
-            type="button"
-            class="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-400 transition hover:bg-white/10 hover:text-white"
-            aria-label="Minimize chat"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              class="h-4 w-4"
-            >
-              <path d="M5 12h14" />
-            </svg>
-          </button>
-        </header>
+            <div class="min-w-0 flex-1">
+              <div class="truncate text-sm font-medium">JianZcar</div>
 
-        <div id="chat-body">
-          <main
-            id="messages"
-            class="h-[380px] space-y-3 overflow-y-auto p-4 text-sm scroll-smooth"
-          ></main>
-
-          <div
-            id="typing"
-            class="hidden px-4 pb-2 text-xs italic text-zinc-400"
-          >
-            JianZcar is typing...
-          </div>
-
-          <form
-            id="composer"
-            class="flex items-end gap-2 border-t border-white/10 bg-zinc-900/50 p-3"
-          >
-            <textarea
-              id="input"
-              rows="1"
-              disabled
-              placeholder="Type a message..."
-              class="max-h-32 min-h-[40px] flex-1 resize-none rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none placeholder:text-zinc-500 focus:border-white/20"
-            ></textarea>
+              <div id="status" class="truncate text-xs text-zinc-400">
+                Connecting...
+              </div>
+            </div>
 
             <button
-              id="send"
-              type="submit"
-              disabled
-              class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-black transition hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-30"
-              aria-label="Send message"
+              id="minimize"
+              type="button"
+              class="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-400 transition hover:bg-white/10 hover:text-white"
+              aria-label="Minimize chat"
+              aria-expanded="true"
             >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                class="h-4 w-4"
-              >
-                <path d="m5 12 14-7-7 14-2-6-5-1Z" />
-              </svg>
+              ${MINIMIZE}
             </button>
-          </form>
+          </header>
+
+          <div id="chat-body">
+            <main
+              id="messages"
+              class="h-[380px] space-y-3 overflow-y-auto p-4 text-sm scroll-smooth"
+            ></main>
+
+            <div
+              id="typing"
+              class="hidden px-4 pb-2 text-xs italic text-zinc-400"
+            >
+              JianZcar is typing...
+            </div>
+
+            <form
+              id="composer"
+              class="flex items-end gap-2 border-t border-white/10 bg-zinc-900/50 p-3"
+            >
+              <textarea
+                id="input"
+                rows="1"
+                disabled
+                placeholder="Type a message..."
+                class="max-h-32 min-h-[40px] flex-1 resize-none rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none placeholder:text-zinc-500 focus:border-white/20"
+              ></textarea>
+
+              <button
+                id="send"
+                type="submit"
+                disabled
+                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-black transition hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-30"
+                aria-label="Send message"
+              >
+                ${SEND}
+              </button>
+            </form>
+          </div>
         </div>
+
+        <!-- Minimized button -->
+        <button
+          id="minimized-button"
+          type="button"
+          aria-label="Open chat"
+          aria-expanded="false"
+          class="absolute bottom-0 right-0 flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-zinc-950/90 text-white shadow-2xl backdrop-blur-xl opacity-100 scale-100 translate-y-0 pointer-events-auto transition-all duration-300 ease-out hover:scale-105 hover:bg-zinc-900"
+        >
+          ${CHAT}
+        </button>
       </div>
     `;
   }
 
   protected override async firstUpdated() {
     const root = this.renderRoot as ShadowRoot;
+
     const $ = <T extends HTMLElement = HTMLElement>(id: string): T =>
       root.getElementById(id) as T;
 
+    this._chat = $("chat");
+    this._minimizedButton = $<HTMLButtonElement>("minimized-button");
     this._messages = $("messages");
     this._input = $<HTMLTextAreaElement>("input");
     this._send = $<HTMLButtonElement>("send");
     this._status = $("status");
     this._statusDot = $("status-dot");
     this._typing = $("typing");
-    this._chatBody = $("chat-body");
 
     $<HTMLFormElement>("composer").addEventListener("submit", (event) => {
       event.preventDefault();
@@ -204,7 +275,11 @@ export class Chat extends LitElement {
     });
 
     $("minimize").addEventListener("click", () => {
-      this._chatBody.classList.toggle("hidden");
+      this._setMinimized(true);
+    });
+
+    this._minimizedButton.addEventListener("click", () => {
+      this._setMinimized(false);
     });
 
     const self = this;
@@ -250,6 +325,7 @@ export class Chat extends LitElement {
           self._send.disabled = true;
 
           self._typing.classList.add("hidden");
+
           self._setStatus("Disconnected");
         });
       },
@@ -281,6 +357,7 @@ export class Chat extends LitElement {
         loglevel: "warn",
 
         whitelisted_plugins: ["portfolio-chat"],
+
         blacklisted_plugins: [
           "converse-omemo",
           "converse-emoji",
@@ -290,15 +367,87 @@ export class Chat extends LitElement {
       });
     } catch (error) {
       console.error("Converse initialization failed:", error);
+
       this._setStatus("Connection failed");
     }
+  }
+
+  private _setMinimized(minimized: boolean) {
+    if (minimized) {
+      this._chat.classList.remove(
+        "opacity-100",
+        "scale-100",
+        "translate-y-0",
+        "pointer-events-auto",
+      );
+
+      this._chat.classList.add(
+        "opacity-0",
+        "scale-95",
+        "translate-y-2",
+        "pointer-events-none",
+      );
+
+      this._minimizedButton.classList.remove(
+        "opacity-0",
+        "scale-75",
+        "translate-y-2",
+        "pointer-events-none",
+      );
+
+      this._minimizedButton.classList.add(
+        "opacity-100",
+        "scale-100",
+        "translate-y-0",
+        "pointer-events-auto",
+      );
+
+      this._minimizedButton.setAttribute("aria-expanded", "false");
+
+      return;
+    }
+
+    this._minimizedButton.classList.remove(
+      "opacity-100",
+      "scale-100",
+      "translate-y-0",
+      "pointer-events-auto",
+    );
+
+    this._minimizedButton.classList.add(
+      "opacity-0",
+      "scale-75",
+      "translate-y-2",
+      "pointer-events-none",
+    );
+
+    this._chat.classList.remove(
+      "opacity-0",
+      "scale-95",
+      "translate-y-2",
+      "pointer-events-none",
+    );
+
+    this._chat.classList.add(
+      "opacity-100",
+      "scale-100",
+      "translate-y-0",
+      "pointer-events-auto",
+    );
+
+    this._minimizedButton.setAttribute("aria-expanded", "true");
+
+    requestAnimationFrame(() => {
+      this._input.focus();
+    });
   }
 
   private _setStatus(text: string, online = false) {
     this._status.textContent = text;
 
     this._statusDot.className =
-      "absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-zinc-950 " +
+      "absolute bottom-0 right-0 h-3 w-3 rounded-full " +
+      "border-2 border-zinc-950 " +
       (online ? "bg-emerald-400" : "bg-zinc-500");
   }
 
@@ -316,16 +465,21 @@ export class Chat extends LitElement {
     if (!id) return;
 
     const target = this._messageElements.get(id);
+
     if (!target) return;
 
     const all = [...this._messages.querySelectorAll(".message-item")];
-    if (target === all[all.length - 1]) return;
+
+    if (target === all[all.length - 1]) {
+      return;
+    }
 
     const marker = document.createElement("div");
 
     marker.className =
-      "read-marker my-2 flex items-center justify-center gap-2 " +
-      "text-[11px] text-zinc-500 select-none";
+      "read-marker my-2 flex items-center " +
+      "justify-center gap-2 text-[11px] " +
+      "text-zinc-500 select-none";
 
     marker.innerHTML = `
       <div class="h-px flex-1 bg-white/10"></div>
@@ -353,28 +507,36 @@ export class Chat extends LitElement {
     const bubble = document.createElement("div");
 
     bubble.className = outgoing
-      ? "max-w-[80%] rounded-2xl rounded-br-none bg-white px-3.5 py-2 text-sm leading-relaxed text-black break-words"
-      : "max-w-[80%] rounded-2xl rounded-bl-none border border-white/5 bg-white/10 px-3.5 py-2 text-sm leading-relaxed text-white break-words";
+      ? "max-w-[80%] rounded-2xl rounded-br-none " +
+        "bg-white px-3.5 py-2 text-sm leading-relaxed " +
+        "text-black break-words"
+      : "max-w-[80%] rounded-2xl rounded-bl-none " +
+        "border border-white/5 bg-white/10 px-3.5 py-2 " +
+        "text-sm leading-relaxed text-white break-words";
 
     const textEl = document.createElement("div");
+
     textEl.textContent = text;
+
     bubble.appendChild(textEl);
 
     if (outgoing) {
-      this._messages.querySelectorAll(".message-meta").forEach((el) => {
-        el.remove();
-      });
+      this._messages
+        .querySelectorAll(".message-meta")
+        .forEach((el) => el.remove());
 
       const meta = document.createElement("div");
 
       meta.className =
-        "message-meta mt-0.5 flex justify-end text-[10px] text-zinc-400";
+        "message-meta mt-0.5 flex justify-end " + "text-[10px] text-zinc-400";
 
-      meta.innerHTML = SINGLE_CHECK;
+      render(SINGLE_CHECK, meta);
 
       bubble.appendChild(meta);
 
-      if (id) this._sentMessages.set(id, meta);
+      if (id) {
+        this._sentMessages.set(id, meta);
+      }
     } else {
       this._lastReadMessageId = id;
     }
@@ -382,19 +544,24 @@ export class Chat extends LitElement {
     wrapper.appendChild(bubble);
     this._messages.appendChild(wrapper);
 
-    if (id) this._messageElements.set(id, wrapper);
+    if (id) {
+      this._messageElements.set(id, wrapper);
+    }
 
     this._updateLastReadMarker();
+
     this._messages.scrollTop = this._messages.scrollHeight;
   }
 
   private _markDelivered(id: string) {
     const el = this._sentMessages.get(id);
 
-    if (!el || el.dataset.state === "read") return;
+    if (!el || el.dataset.state === "read") {
+      return;
+    }
 
     el.dataset.state = "delivered";
-    el.innerHTML = DOUBLE_CHECK;
+    render(DOUBLE_CHECK, el);
   }
 
   private _markRead(id: string) {
@@ -402,9 +569,11 @@ export class Chat extends LitElement {
 
     if (el) {
       el.dataset.state = "read";
+
       el.className =
-        "message-meta mt-0.5 flex justify-end text-[10px] text-sky-400";
-      el.innerHTML = DOUBLE_CHECK;
+        "message-meta mt-0.5 flex justify-end " + "text-[10px] text-sky-400";
+
+      render(DOUBLE_CHECK, el);
     }
 
     this._updateLastReadMarker(id);
@@ -413,9 +582,12 @@ export class Chat extends LitElement {
   private _handleMessage = (stanza: Element) => {
     const from = stanza.getAttribute("from")?.split("/")[0];
 
-    if (from !== PERSONAL_JID) return true;
+    if (from !== PERSONAL_JID) {
+      return true;
+    }
 
     const receipt = this._getTag(stanza, "received");
+
     const displayed =
       this._getTag(stanza, "displayed") || this._getTag(stanza, "acknowledged");
 
@@ -432,7 +604,10 @@ export class Chat extends LitElement {
     this._typing.classList.toggle("hidden", !composing);
 
     const text = this._getTag(stanza, "body")?.textContent?.trim();
-    if (!text) return true;
+
+    if (!text) {
+      return true;
+    }
 
     const id = stanza.getAttribute("id");
 
@@ -467,12 +642,16 @@ export class Chat extends LitElement {
 
   private _handlePresence = (stanza: Element) => {
     const from = stanza.getAttribute("from")?.split("/")[0];
-    if (from !== PERSONAL_JID) return true;
+
+    if (from !== PERSONAL_JID) {
+      return true;
+    }
 
     const type = stanza.getAttribute("type");
 
     if (type === "unavailable" || type === "unsubscribed") {
       this._setStatus("Offline · Usually replies in <1 hr");
+
       this._typing.classList.add("hidden");
     } else {
       this._setStatus("Online", true);
@@ -482,7 +661,9 @@ export class Chat extends LitElement {
   };
 
   private _sendChatState(state: string) {
-    if (!this._connected) return;
+    if (!this._connected) {
+      return;
+    }
 
     this._connection!.send(
       converse.env
@@ -497,10 +678,15 @@ export class Chat extends LitElement {
   }
 
   private _sendMessage() {
-    if (!this._connected) return;
+    if (!this._connected) {
+      return;
+    }
 
     const text = this._input.value.trim();
-    if (!text) return;
+
+    if (!text) {
+      return;
+    }
 
     const id = crypto.randomUUID();
 
