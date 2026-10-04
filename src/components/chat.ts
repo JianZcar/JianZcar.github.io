@@ -294,7 +294,7 @@ export class Chat extends LitElement {
 
             <form
               id="composer"
-              class="flex items-end gap-2 border-t border-[#315659]/10 bg-white/35 p-3"
+              class="flex items-end gap-2 border-t border-[#315659]/10 bg-white/35 p-3 pb-0"
             >
               <textarea
                 id="input"
@@ -314,6 +314,12 @@ export class Chat extends LitElement {
                 ${SEND}
               </button>
             </form>
+
+            <p
+              class="bg-white/35 px-3 py-1.5 text-center text-[10px] text-[#315659]/70"
+            >
+              powered by xmpp
+            </p>
           </div>
         </div>
 
