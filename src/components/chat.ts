@@ -143,28 +143,30 @@ export class Chat extends LitElement {
         <!-- Full chat -->
         <div
           id="chat"
-          class="w-[380px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl border border-white/10 bg-zinc-950/90 text-white shadow-2xl backdrop-blur-xl origin-bottom-right opacity-0 scale-95 translate-y-2 pointer-events-none transition-all duration-300 ease-out"
+          class="w-[380px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl border border-white/75 bg-white/65 text-[#253031] shadow-[0_20px_60px_rgba(37,48,49,0.14)] backdrop-blur-2xl origin-bottom-right opacity-0 scale-95 translate-y-2 pointer-events-none transition-all duration-300 ease-out"
         >
           <header
-            class="flex h-16 items-center gap-3 border-b border-white/10 px-4 select-none"
+            class="flex h-16 items-center gap-3 border-b border-[#315659]/10 px-4 select-none"
           >
             <div class="relative shrink-0">
               <img
                 src="https://api.dicebear.com/9.x/initials/svg?seed=JianZcar"
-                class="h-10 w-10 rounded-full bg-zinc-800 object-cover"
+                class="h-10 w-10 rounded-full border border-white/80 bg-[#ccdde2] object-cover"
                 alt="Avatar"
               />
 
               <span
                 id="status-dot"
-                class="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-zinc-950 bg-zinc-500"
+                class="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white bg-[#315659]"
               ></span>
             </div>
 
             <div class="min-w-0 flex-1">
-              <div class="truncate text-sm font-medium">JianZcar</div>
+              <div class="truncate text-sm font-semibold text-[#253031]">
+                JianZcar
+              </div>
 
-              <div id="status" class="truncate text-xs text-zinc-400">
+              <div id="status" class="truncate text-xs text-[#315659]/75">
                 Connecting...
               </div>
             </div>
@@ -172,7 +174,7 @@ export class Chat extends LitElement {
             <button
               id="minimize"
               type="button"
-              class="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-400 transition hover:bg-white/10 hover:text-white"
+              class="flex h-8 w-8 items-center justify-center rounded-lg text-[#315659]/75 transition hover:bg-[#ccdde2]/50 hover:text-[#253031]"
               aria-label="Minimize chat"
               aria-expanded="true"
             >
@@ -188,28 +190,28 @@ export class Chat extends LitElement {
 
             <div
               id="typing"
-              class="hidden px-4 pb-2 text-xs italic text-zinc-400"
+              class="hidden px-4 pb-2 text-xs italic text-[#315659]/70"
             >
               JianZcar is typing...
             </div>
 
             <form
               id="composer"
-              class="flex items-end gap-2 border-t border-white/10 bg-zinc-900/50 p-3"
+              class="flex items-end gap-2 border-t border-[#315659]/10 bg-white/35 p-3"
             >
               <textarea
                 id="input"
                 rows="1"
                 disabled
                 placeholder="Type a message..."
-                class="max-h-32 min-h-[40px] flex-1 resize-none rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none placeholder:text-zinc-500 focus:border-white/20"
+                class="max-h-32 min-h-[40px] flex-1 resize-none rounded-xl border border-[#315659]/15 bg-white/60 px-3 py-2 text-sm text-[#253031] outline-none placeholder:text-[#315659]/50 focus:border-[#2978a0]/40 focus:ring-2 focus:ring-[#2978a0]/10"
               ></textarea>
 
               <button
                 id="send"
                 type="submit"
                 disabled
-                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-black transition hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-30"
+                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#2978a0] text-white transition hover:bg-[#315659] disabled:cursor-not-allowed disabled:opacity-35"
                 aria-label="Send message"
               >
                 ${SEND}
@@ -224,7 +226,7 @@ export class Chat extends LitElement {
           type="button"
           aria-label="Open chat"
           aria-expanded="false"
-          class="absolute bottom-0 right-0 flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-zinc-950/90 text-white shadow-2xl backdrop-blur-xl opacity-100 scale-100 translate-y-0 pointer-events-auto transition-all duration-300 ease-out hover:scale-105 hover:bg-zinc-900"
+          class="absolute bottom-0 right-0 flex h-12 w-12 items-center justify-center rounded-full border border-white/80 bg-white/70 text-[#2978a0] shadow-[0_12px_35px_rgba(37,48,49,0.16)] backdrop-blur-2xl opacity-100 scale-100 translate-y-0 pointer-events-auto transition-all duration-300 ease-out hover:scale-105 hover:bg-white/85 hover:text-[#315659]"
         >
           ${CHAT}
         </button>
@@ -240,6 +242,7 @@ export class Chat extends LitElement {
 
     this._chat = $("chat");
     this._minimizedButton = $<HTMLButtonElement>("minimized-button");
+
     this._messages = $("messages");
     this._input = $<HTMLTextAreaElement>("input");
     this._send = $<HTMLButtonElement>("send");
@@ -261,6 +264,7 @@ export class Chat extends LitElement {
 
     this._input.addEventListener("input", () => {
       this._input.style.height = "auto";
+
       this._input.style.height = `${Math.min(this._input.scrollHeight, 128)}px`;
 
       if (this._connected) {
@@ -285,7 +289,11 @@ export class Chat extends LitElement {
     const self = this;
 
     converse.plugins.add("portfolio-chat", {
-      initialize(this: { _converse: { api: ConverseApi } }) {
+      initialize(this: {
+        _converse: {
+          api: ConverseApi;
+        };
+      }) {
         const api = this._converse.api;
 
         api.listen.on("connected", () => {
@@ -446,9 +454,9 @@ export class Chat extends LitElement {
     this._status.textContent = text;
 
     this._statusDot.className =
-      "absolute bottom-0 right-0 h-3 w-3 rounded-full " +
-      "border-2 border-zinc-950 " +
-      (online ? "bg-emerald-400" : "bg-zinc-500");
+      "absolute bottom-0 right-0 h-3 w-3 " +
+      "rounded-full border-2 border-white " +
+      (online ? "bg-[#9ad5ca]" : "bg-[#315659]");
   }
 
   private _getTag(stanza: Element, name: string) {
@@ -479,12 +487,12 @@ export class Chat extends LitElement {
     marker.className =
       "read-marker my-2 flex items-center " +
       "justify-center gap-2 text-[11px] " +
-      "text-zinc-500 select-none";
+      "text-[#315659]/70 select-none";
 
     marker.innerHTML = `
-      <div class="h-px flex-1 bg-white/10"></div>
+      <div class="h-px flex-1 bg-[#315659]/12"></div>
       <span>^^ Read by JianZcar ^^</span>
-      <div class="h-px flex-1 bg-white/10"></div>
+      <div class="h-px flex-1 bg-[#315659]/12"></div>
     `;
 
     target.insertAdjacentElement("afterend", marker);
@@ -508,11 +516,13 @@ export class Chat extends LitElement {
 
     bubble.className = outgoing
       ? "max-w-[80%] rounded-2xl rounded-br-none " +
-        "bg-white px-3.5 py-2 text-sm leading-relaxed " +
-        "text-black break-words"
+        "bg-[#2978a0] px-3.5 py-2 text-sm " +
+        "leading-relaxed text-white break-words " +
+        "shadow-sm"
       : "max-w-[80%] rounded-2xl rounded-bl-none " +
-        "border border-white/5 bg-white/10 px-3.5 py-2 " +
-        "text-sm leading-relaxed text-white break-words";
+        "border border-white/70 bg-[#ccdde2]/70 " +
+        "px-3.5 py-2 text-sm leading-relaxed " +
+        "text-[#253031] break-words shadow-sm";
 
     const textEl = document.createElement("div");
 
@@ -528,7 +538,7 @@ export class Chat extends LitElement {
       const meta = document.createElement("div");
 
       meta.className =
-        "message-meta mt-0.5 flex justify-end " + "text-[10px] text-zinc-400";
+        "message-meta mt-0.5 flex justify-end " + "text-[10px] text-white/65";
 
       render(SINGLE_CHECK, meta);
 
@@ -561,6 +571,7 @@ export class Chat extends LitElement {
     }
 
     el.dataset.state = "delivered";
+
     render(DOUBLE_CHECK, el);
   }
 
@@ -571,7 +582,7 @@ export class Chat extends LitElement {
       el.dataset.state = "read";
 
       el.className =
-        "message-meta mt-0.5 flex justify-end " + "text-[10px] text-sky-400";
+        "message-meta mt-0.5 flex justify-end " + "text-[10px] text-[#9ad5ca]";
 
       render(DOUBLE_CHECK, el);
     }
