@@ -26,7 +26,7 @@ export class SecHero extends LitElement {
 
   override render() {
     return html`
-      <section class="pt-8 max-w-256 mx-auto">
+      <section class="pt-8 lg:pt-24 max-w-256 mx-auto">
         <div class="grid sm:grid-cols-2 grid-row-2 sm:gap-8">
           <div class="relative flex flex-col justify-center">
             <div
@@ -69,7 +69,7 @@ export class SecHero extends LitElement {
                 solutions. Together, we build, automate, and deploy your
                 <strong>vision</strong></span
               >
-              <div class="md:text-lg absolute top-full mt-12 flex flex-col">
+              <div class="sm:absolute top-full mt-12 flex flex-col md:text-lg ">
                 <div class="flex justify-center items-center text-#4fa3ab py-3">
                   ${CONVERSATION}
                 </div>
