@@ -2,7 +2,6 @@ import { css, html, LitElement } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import "../sections/sec-hero";
-import "../components/chat";
 
 @customElement("page-home")
 export class PageHome extends LitElement {
@@ -12,6 +11,10 @@ export class PageHome extends LitElement {
 
   protected override firstUpdated() {
     void import("../sections/sec-cert");
+
+    const chat = () => void import("../components/chat");
+    if (document.readyState === "complete") chat();
+    else window.addEventListener("load", chat, { once: true });
   }
 
   override render() {
