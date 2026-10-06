@@ -2,6 +2,8 @@ import { Router } from "@lit-labs/router";
 import { css, html, LitElement } from "lit";
 import { customElement } from "lit/decorators.js";
 
+import "./pages/home";
+
 @customElement("app-root")
 export class RootElement extends LitElement {
   static override styles = css`
@@ -16,18 +18,12 @@ export class RootElement extends LitElement {
   private _routes = new Router(this, [
     {
       path: "/",
-      enter: async () => {
-        await import("./pages/home");
-        return true;
-      },
+      enter: () => true,
       render: () => html`<page-home></page-home>`,
     },
     {
       path: "/home",
-      enter: async () => {
-        await import("./pages/home");
-        return true;
-      },
+      enter: () => true,
       render: () => html`<page-home></page-home>`,
     },
     {

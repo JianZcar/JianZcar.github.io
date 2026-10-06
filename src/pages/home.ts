@@ -2,7 +2,6 @@ import { css, html, LitElement } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import "../sections/sec-hero";
-import "../sections/sec-cert";
 import "../components/chat";
 
 @customElement("page-home")
@@ -10,6 +9,10 @@ export class PageHome extends LitElement {
   static override styles = css`
     @unocss-placeholder;
   `;
+
+  protected override firstUpdated() {
+    void import("../sections/sec-cert");
+  }
 
   override render() {
     return html`

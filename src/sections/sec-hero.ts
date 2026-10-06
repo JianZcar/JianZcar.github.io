@@ -26,7 +26,7 @@ export class SecHero extends LitElement {
 
   override render() {
     return html`
-      <section class="pt-8 lg:pt-24 max-w-256 mx-auto">
+      <section class="lg:pt-24 max-w-256 mx-auto">
         <div class="grid sm:grid-cols-2 grid-row-2 sm:gap-8">
           <div class="relative flex flex-col justify-center">
             <div
