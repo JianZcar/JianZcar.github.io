@@ -328,7 +328,7 @@ export class Chat extends LitElement {
           type="button"
           aria-label="Open chat"
           aria-expanded="false"
-          class="absolute bottom-0 right-0 flex h-12 w-12 items-center justify-center rounded-full border border-white/80 bg-white/70 text-[#2978a0] shadow-[0_12px_35px_rgba(37,48,49,0.16)] backdrop-blur-2xl opacity-100 scale-100 translate-y-0 pointer-events-auto transition-all duration-300 ease-out hover:scale-105 hover:bg-white/85 hover:text-[#315659]"
+          class="absolute bottom-0 right-0 flex h-12 w-12 items-center justify-center rounded-full border border-white/60 bg-white/40 text-[#315659]/70 shadow-[0_12px_35px_rgba(37,48,49,0.1)] backdrop-blur-2xl opacity-100 scale-100 translate-y-0 pointer-events-auto transition-all duration-300 ease-out hover:border-white/85 hover:bg-white/70 hover:text-[#253031]/90 active:bg-white/80 focus-visible:outline-2 focus-visible:outline-[#2978a0]/50 focus-visible:outline-offset-2 motion-reduce:transition-none"
         >
           ${CHAT}
         </button>
