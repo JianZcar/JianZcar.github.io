@@ -21,6 +21,25 @@ const DEFAULT_BLUR_CURVE = 2;
  */
 const OBSERVER_STEPS = 24;
 
+/** Exit animation for the grid before the marquee takes its place back. */
+const COLLAPSE_MS = 300;
+
+const CHEVRON = html`
+  <svg
+    width="1em"
+    height="1em"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="m6 9 6 6 6-6" />
+  </svg>
+`;
+
 @customElement("sec-cert")
 export class SecCert extends LitElement {
   static override get observedAttributes(): string[] {
@@ -39,7 +58,11 @@ export class SecCert extends LitElement {
   private _maxBlur = DEFAULT_MAX_BLUR;
   private _blurCurve = DEFAULT_BLUR_CURVE;
   private _observer?: IntersectionObserver;
+  private _blurApplied = false;
   private _revealed = false;
+  private _expanded = false;
+  private _collapsing = false;
+  private _collapseTimer: number | undefined;
 
   get certificates() {
     return this._certificates;
@@ -126,6 +149,14 @@ export class SecCert extends LitElement {
 
     this._observer?.disconnect();
     this._observer = undefined;
+
+    // Land the pending collapse instead of leaving the flag stuck true.
+    if (this._collapseTimer !== undefined) {
+      window.clearTimeout(this._collapseTimer);
+      this._collapseTimer = undefined;
+      this._expanded = false;
+      this._collapsing = false;
+    }
   }
 
   protected override firstUpdated() {
@@ -147,25 +178,19 @@ export class SecCert extends LitElement {
     if (!strip) return;
 
     // Once the observer owns the strip it reports every change, so later render
-    // passes must not read layout again or re-apply the instant first frame.
+    // passes must not re-observe or re-apply the opening frame.
     if (this._observer) {
       this._observer.observe(strip);
 
       return;
     }
 
-    // Applied synchronously, because the observer's first callback can arrive
-    // more than a second late for a strip that starts outside the viewport.
-    const reveal = this._revealOf(strip);
-    if (reveal >= 1) {
-      this._lockSharp();
-
-      return;
-    }
-
-    this._setBlur(this._blurFor(reveal), true);
-
-    this._observer ??= new IntersectionObserver(this._onStripIntersect, {
+    // No layout read here: measuring the strip forces a synchronous relayout of
+    // the freshly inserted section, which shows up as a long task on load. The
+    // observer's first entry carries the same ratio, and for a strip that is on
+    // screen it lands before the first paint, so the opening blur never flashes.
+    // A strip outside the viewport starts sharp and is off screen anyway.
+    this._observer = new IntersectionObserver(this._onStripIntersect, {
       threshold: Array.from(
         { length: OBSERVER_STEPS },
         (_, i) => i / (OBSERVER_STEPS - 1),
@@ -175,23 +200,12 @@ export class SecCert extends LitElement {
     this._observer.observe(strip);
   }
 
-  private _revealOf(strip: HTMLElement) {
-    const box = strip.getBoundingClientRect();
-    if (box.height <= 0) return 0;
-
-    const visible = Math.max(
-      0,
-      Math.min(box.bottom, window.innerHeight) - Math.max(box.top, 0),
-    );
-
-    return Math.min(1, visible / box.height);
-  }
-
   private _lockSharp() {
     this._revealed = true;
     this._observer?.disconnect();
     this._observer = undefined;
     this._setBlur(0);
+    this.requestUpdate();
   }
 
   /**
@@ -212,7 +226,11 @@ export class SecCert extends LitElement {
       return;
     }
 
-    this._setBlur(this._blurFor(entry.intersectionRatio));
+    // The opening value must not fade in from sharp, so the first entry lands
+    // without the transition. Everything after it follows the scroll.
+    const opening = !this._blurApplied;
+    this._blurApplied = true;
+    this._setBlur(this._blurFor(entry.intersectionRatio), opening);
   };
 
   private _setBlur(blur: number, instant = false) {
@@ -250,12 +268,52 @@ export class SecCert extends LitElement {
     return Math.min(MAX_DURATION, Math.max(MIN_DURATION, seconds));
   }
 
-  private _renderItem(certificate: Certificate) {
+  private _toggle = () => {
+    // A click during the exit animation cancels it and keeps the grid open.
+    if (this._collapsing) {
+      window.clearTimeout(this._collapseTimer);
+      this._collapseTimer = undefined;
+      this._collapsing = false;
+      this.requestUpdate();
+
+      return;
+    }
+
+    if (!this._expanded) {
+      this._expanded = true;
+      this.requestUpdate();
+
+      return;
+    }
+
+    this._collapsing = true;
+    this.requestUpdate();
+
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    this._collapseTimer = window.setTimeout(
+      () => {
+        this._collapseTimer = undefined;
+        this._collapsing = false;
+        this._expanded = false;
+        this.requestUpdate();
+      },
+      reduced ? 0 : COLLAPSE_MS,
+    );
+  };
+
+  private _renderItem(certificate: Certificate, grid = false) {
+    const card = grid
+      ? "mx-auto w-full max-w-[var(--cert-w)]"
+      : "w-[var(--cert-w)]";
+
     return html`
-      <li class="shrink-0 pe-6">
-        <figure class="card m-0">
+      <li class="${grid ? "min-w-0" : "shrink-0 pe-6"}">
+        <figure class="m-0 ${card}">
           <div
-            class="frame overflow-hidden rounded-2xl border border-white/75 bg-white/65 shadow-[0_20px_60px_rgba(37,48,49,0.14)]"
+            class="overflow-hidden rounded-2xl border border-white/75 bg-white/65 shadow-[0_20px_60px_rgba(37,48,49,0.14)]"
           >
             <img
               src="${certificate.image}-${MIDDLE_WIDTH}.webp"
@@ -294,29 +352,79 @@ export class SecCert extends LitElement {
   override render() {
     if (this.certificates.length === 0) return nothing;
 
-    const items = this.certificates.map((certificate) =>
-      this._renderItem(certificate),
-    );
+    const items = (grid: boolean) =>
+      this.certificates.map((certificate) =>
+        this._renderItem(certificate, grid),
+      );
+
+    const open = this._expanded && !this._collapsing;
+
+    const toggleState = this._revealed
+      ? "pointer-events-auto opacity-100"
+      : "pointer-events-none opacity-0 [translate:0_2rem]";
+
+    const toggleTone = open
+      ? "border-white/75 bg-white/60 text-[#253031]/85"
+      : "border-white/60 bg-white/40 text-[#315659]/70";
+
+    const gridState = this._collapsing
+      ? "opacity-0 [translate:0_1rem] transition-all duration-300 ease-out motion-reduce:transition-none"
+      : "animate-[cert-in_320ms_ease-out] motion-reduce:animate-none";
 
     return html`
-      <section class="mx-auto max-w-256 py-24 sm:pt-48">
+      <section class="mx-auto max-w-256 pb-24">
         <div
-          class="viewport relative overflow-hidden py-2"
-          style="--marquee-duration: ${this._duration()}s"
+          class="mt-6 flex justify-center transition duration-500 ease-out motion-reduce:transition-none ${toggleState}"
+          ?inert="${!this._revealed}"
+          ?aria-hidden="${!this._revealed}"
         >
-          <div class="track flex w-max">
-            <ul class="m-0 flex list-none shrink-0 p-0" role="list">
-              ${items}
-            </ul>
-            <ul
-              class="m-0 flex list-none shrink-0 p-0"
-              role="list"
-              aria-hidden="true"
+          <button
+            type="button"
+            class="inline-flex min-h-10 cursor-pointer items-center justify-center gap-1.5 rounded-full border px-4 text-xs font-medium tracking-[0.08em] uppercase shadow-[0_12px_35px_rgba(37,48,49,0.1)] backdrop-blur-2xl transition-colors duration-300 ease-out hover:border-white/85 hover:bg-white/70 hover:text-[#253031]/90 active:bg-white/80 focus-visible:outline-2 focus-visible:outline-[#2978a0]/50 focus-visible:outline-offset-2 motion-reduce:transition-none ${toggleTone}"
+            aria-expanded="${open}"
+            @click="${this._toggle}"
+          >
+            <span
+              class="inline-flex transition-transform duration-300 ease-out motion-reduce:transition-none ${
+                open ? "rotate-180" : ""
+              }"
             >
-              ${items}
-            </ul>
-          </div>
+              ${CHEVRON}
+            </span>
+            <span>${open ? "Show less" : "Show all"}</span>
+          </button>
         </div>
+
+        ${
+          this._expanded
+            ? html`
+                <ul
+                  class="m-0 mt-6 grid list-none grid-cols-1 gap-6 p-0 px-4 sm:grid-cols-2 lg:grid-cols-3 ${gridState}"
+                  role="list"
+                >
+                  ${items(true)}
+                </ul>
+              `
+            : html`
+                <div
+                  class="viewport relative mt-6 overflow-hidden py-2"
+                  style="--marquee-duration: ${this._duration()}s"
+                >
+                  <div class="track flex w-max">
+                    <ul class="m-0 flex list-none shrink-0 p-0" role="list">
+                      ${items(false)}
+                    </ul>
+                    <ul
+                      class="m-0 flex list-none shrink-0 p-0"
+                      role="list"
+                      aria-hidden="true"
+                    >
+                      ${items(false)}
+                    </ul>
+                  </div>
+                </div>
+              `
+        }
       </section>
     `;
   }
@@ -368,14 +476,6 @@ export class SecCert extends LitElement {
       background: linear-gradient(to left, var(--cert-fade-color), transparent);
     }
 
-    .frame {
-      width: var(--cert-w);
-    }
-
-    .card {
-      width: var(--cert-w);
-    }
-
     @keyframes cert-marquee {
       from {
         transform: translate3d(0, 0, 0);
@@ -383,6 +483,18 @@ export class SecCert extends LitElement {
 
       to {
         transform: translate3d(-50%, 0, 0);
+      }
+    }
+
+    @keyframes cert-in {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
     }
 
