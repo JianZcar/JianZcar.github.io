@@ -65,22 +65,53 @@
       ::-webkit-scrollbar-corner {
         background: transparent;
       }
+
+      @font-face {
+        font-family: "Inter";
+        font-style: normal;
+        font-weight: 400 700;
+        font-display: swap;
+        src: url("/fonts/inter-latin.woff2") format("woff2");
+      }
+
+      @font-face {
+        font-family: "Syncopate";
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url("/fonts/syncopate-400-latin.woff2") format("woff2");
+      }
+
+      @font-face {
+        font-family: "Syncopate";
+        font-style: normal;
+        font-weight: 700;
+        font-display: swap;
+        src: url("/fonts/syncopate-700-latin.woff2") format("woff2");
+      }
     </style>
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syncopate:wght@400;700&display=swap"
-      rel="stylesheet"
-      media="print"
-      onload="this.media='all'"
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/inter-latin.woff2"
+      crossorigin
     />
-    <noscript>
-      <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syncopate:wght@400;700&display=swap"
-        rel="stylesheet"
-      />
-    </noscript>
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/syncopate-400-latin.woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/syncopate-700-latin.woff2"
+      crossorigin
+    />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
   <body>
     <main id="app-viewport">
