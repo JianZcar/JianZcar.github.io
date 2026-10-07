@@ -18,19 +18,91 @@ const CONVERSATION = html`
     />
   </svg>
 `;
+
+const CHEVRON = html`
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1.25em"
+    height="1.25em"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="m6 9 6 6 6-6" />
+  </svg>
+`;
 @customElement("sec-hero")
 export class SecHero extends LitElement {
   static override styles = css`
-    @unocss-placeholder;
+    @unocss-placeholder
+
+    #scroll-hint {
+      transition: opacity 500ms ease-out;
+    }
+
+    #scroll-hint.is-hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #scroll-hint svg {
+      animation: hint-bob 2.6s ease-in-out infinite;
+    }
+
+    @keyframes hint-bob {
+      50% {
+        transform: translateY(4px);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #scroll-hint,
+      #scroll-hint svg {
+        transition: none;
+        animation: none;
+      }
+    }
   `;
+
+  private _onFirstScroll = () => {
+    if (window.scrollY === 0) return;
+    window.removeEventListener("scroll", this._onFirstScroll);
+    const hint = this.renderRoot.querySelector("#scroll-hint");
+    if (!hint) return;
+    hint.classList.add("is-hidden");
+    hint.setAttribute("aria-hidden", "true");
+  };
+
+  protected override firstUpdated() {
+    const hint = this.renderRoot.querySelector("#scroll-hint");
+    if (!hint) return;
+
+    if (window.scrollY > 0) {
+      hint.classList.add("is-hidden");
+      hint.setAttribute("aria-hidden", "true");
+      return;
+    }
+    window.addEventListener("scroll", this._onFirstScroll, { passive: true });
+  }
+
+  override disconnectedCallback() {
+    window.removeEventListener("scroll", this._onFirstScroll);
+    super.disconnectedCallback();
+  }
 
   override render() {
     return html`
-      <section class="lg:pt-24 max-w-256 mx-auto">
-        <div class="grid sm:grid-cols-2 grid-row-2 sm:gap-8">
+      <section class="relative h-screen max-w-256 mx-auto">
+        <div
+          class="pt-6 sm:pt-12 md:pt-24 grid md:grid-cols-2 grid-row-2 md:gap-8"
+        >
           <div class="relative flex flex-col justify-center">
             <div
-              class="max-w-96 after:max-w-96 sm:max-w-192 after:sm:max-w-192 after:content-[''] bg-[radial-gradient(circle,white_0%,white_5%,#c6e0ff_70%,#c6e0ff_100%)] after:absolute after:inset-0 after:bg-[radial-gradient(circle,transparent_0%,transparent_5%,#c6e0ff_70%,#c6e0ff_100%)]"
+              class="max-w-96 after:max-w-96 md:max-w-192 after:md:max-w-192 after:content-[''] bg-[radial-gradient(circle,white_0%,white_5%,#c6e0ff_70%,#c6e0ff_100%)] after:absolute after:inset-0 after:bg-[radial-gradient(circle,transparent_0%,transparent_5%,#c6e0ff_70%,#c6e0ff_100%)]"
             >
               <img
                 src="/img/my-pic-768.webp"
@@ -49,12 +121,12 @@ export class SecHero extends LitElement {
               />
             </div>
             <div
-              class=" absolute px-16 flex flex-col gap-2 font-syncopate text-3xl md:text-5xl mix-blend-multiply"
+              class=" absolute px-16 flex flex-col gap-2 font-syncopate text-3xl sm:text-5xl mix-blend-multiply"
             >
               <h1 class="text-#2978A0">BUILD</h1>
               <h1 class="text-#9AD5CA">AUTOMATE</h1>
               <h1 class="text-#253031">DEPLOY</h1>
-              <h2 class="text-#253031 text-lg md:text-2xl">
+              <h2 class="text-#253031 text-lg sm:text-2xl">
                 <strong class="text-#4fa3ab">YOUR</strong>
                 <el-scrolling-word class="italic"></el-scrolling-word>
               </h2>
@@ -62,14 +134,14 @@ export class SecHero extends LitElement {
           </div>
           <div class="px-16 flex flex-col justify-center">
             <div class="relative flex flex-col justify-center items-center">
-              <span class="text-xs md:text-sm line-height-loose"
+              <span class="text-xs sm:text-sm line-height-loose"
                 >I'm <strong>JianZcar</strong>, a Systems Software &
                 Infrastructure Engineer. I help projects and businesses turn
                 complex technical problems into minimal, straightforward
                 solutions. Together, we build, automate, and deploy your
                 <strong>vision</strong></span
               >
-              <div class="sm:absolute top-full mt-12 flex flex-col md:text-lg ">
+              <div class="md:absolute top-full mt-12 flex flex-col sm:text-lg ">
                 <div class="flex justify-center items-center text-#4fa3ab py-3">
                   ${CONVERSATION}
                 </div>
@@ -78,6 +150,13 @@ export class SecHero extends LitElement {
               </div>
             </div>
           </div>
+        </div>
+        <div
+          id="scroll-hint"
+          class="absolute inset-x-0 bottom-5 flex flex-col items-center gap-1 text-xs text-[#3f6165] select-none"
+        >
+          <span>Scroll to explore</span>
+          ${CHEVRON}
         </div>
       </section>
     `;
