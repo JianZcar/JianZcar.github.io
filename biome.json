@@ -1,0 +1,9 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.0/schema.json",
+  "files": {
+    "includes": ["src/**", "vite/**", "tests/**", "vite.config.ts", "vitest.config.ts"]
+  },
+  "linter": {
+    "enabled": true
+  }
+}

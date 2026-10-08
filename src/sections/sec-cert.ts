@@ -2,24 +2,17 @@ import { css, html, LitElement, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import { CERTIFICATES, type Certificate } from "../data/certificates";
-
-const GAP = 24;
-const DEFAULT_SPEED = 40;
-const DEFAULT_CARD_WIDTH = 340;
-const MIN_DURATION = 20;
-const MAX_DURATION = 240;
-const SRCSET_WIDTHS = [480, 680, 960];
-const MIDDLE_WIDTH = SRCSET_WIDTHS[1];
-
-/* Blur curve: the strip showing `ratio` of its height gets maxBlur * (1 - ratio^curve). */
-const DEFAULT_MAX_BLUR = 10;
-const DEFAULT_BLUR_CURVE = 2;
-
-/**
- * Observer granularity for the single strip target. The CSS transition absorbs
- * what is left, so this only needs to be coarse enough to stay cheap on scroll.
- */
-const OBSERVER_STEPS = 24;
+import {
+  blurFor,
+  DEFAULT_BLUR_CURVE,
+  DEFAULT_CARD_WIDTH,
+  DEFAULT_MAX_BLUR,
+  DEFAULT_SPEED,
+  marqueeDuration,
+  MIDDLE_WIDTH,
+  revealThresholds,
+  srcSet,
+} from "../lib/cert";
 
 /** Exit animation for the grid before the marquee takes its place back. */
 const COLLAPSE_MS = 300;
@@ -191,10 +184,7 @@ export class SecCert extends LitElement {
     // screen it lands before the first paint, so the opening blur never flashes.
     // A strip outside the viewport starts sharp and is off screen anyway.
     this._observer = new IntersectionObserver(this._onStripIntersect, {
-      threshold: Array.from(
-        { length: OBSERVER_STEPS },
-        (_, i) => i / (OBSERVER_STEPS - 1),
-      ),
+      threshold: revealThresholds(),
     });
 
     this._observer.observe(strip);
@@ -256,16 +246,15 @@ export class SecCert extends LitElement {
   }
 
   private _blurFor(ratio: number) {
-    if (this._maxBlur <= 0) return 0;
-
-    return this._maxBlur * (1 - Math.pow(ratio, this._blurCurve));
+    return blurFor(ratio, this._maxBlur, this._blurCurve);
   }
 
   private _duration() {
-    const groupWidth = this.certificates.length * (this.cardWidth + GAP);
-    const seconds = groupWidth / Math.max(this.speed, 1);
-
-    return Math.min(MAX_DURATION, Math.max(MIN_DURATION, seconds));
+    return marqueeDuration(
+      this.certificates.length,
+      this.cardWidth,
+      this.speed,
+    );
   }
 
   private _toggle = () => {
@@ -317,9 +306,7 @@ export class SecCert extends LitElement {
           >
             <img
               src="${certificate.image}-${MIDDLE_WIDTH}.webp"
-              srcset=${SRCSET_WIDTHS.map(
-                (width) => `${certificate.image}-${width}.webp ${width}w`,
-              ).join(", ")}
+              srcset=${srcSet(certificate.image)}
               sizes="${this.cardWidth}px"
               width="1600"
               height="1200"
@@ -361,7 +348,7 @@ export class SecCert extends LitElement {
 
     const toggleState = this._revealed
       ? "pointer-events-auto opacity-100"
-      : "pointer-events-none opacity-0 [translate:0_2rem]";
+      : "pointer-events-none opacity-0 [translate:0_4rem]";
 
     const toggleTone = open
       ? "border-white/75 bg-white/60 text-[#253031]/85"

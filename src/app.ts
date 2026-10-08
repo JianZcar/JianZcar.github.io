@@ -2,7 +2,10 @@ import { Router } from "@lit-labs/router";
 import { css, html, LitElement } from "lit";
 import { customElement } from "lit/decorators.js";
 
+import { initSquish } from "./lib/squish";
 import "./pages/home";
+
+initSquish();
 
 @customElement("app-root")
 export class RootElement extends LitElement {

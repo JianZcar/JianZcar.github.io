@@ -1,0 +1,24 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "displayName": "JianZcar"
+  },
+  "entries": [
+    {
+      "identifier": "urn:air:jianzcar:site:portfolio",
+      "displayName": "JianZcar Portfolio Catalog",
+      "type": "application/ai-catalog+json",
+      "description": "Portfolio and certification catalog for JianZcar, a Systems Software and Infrastructure Engineer.",
+      "representativeQueries": [
+        "Who is JianZcar?",
+        "What does JianZcar build?",
+        "What certifications does JianZcar have?"
+      ],
+      "data": {
+        "site": "https://jianzcar.github.io",
+        "kind": "portfolio",
+        "about": "Systems Software and Infrastructure Engineer portfolio with project highlights, engineering focus, and professional certifications."
+      }
+    }
+  ]
+}

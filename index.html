@@ -23,6 +23,7 @@
     <style>
       body {
         margin: 0;
+        background-color: #c6e0ff;
       }
 
       :root {
@@ -89,6 +90,32 @@
         font-display: swap;
         src: url("/fonts/syncopate-700-latin.woff2") format("woff2");
       }
+
+      #boot-hero {
+        display: none;
+      }
+
+      @media (max-width: 767px) {
+        #boot-hero {
+          position: absolute;
+          top: 24px;
+          left: 0;
+          display: block;
+          width: min(384px, 100%);
+        }
+        #boot-hero img {
+          display: block;
+          width: 100%;
+          height: auto;
+          opacity: 0.6;
+        }
+      }
+
+      @media (min-width: 640px) and (max-width: 767px) {
+        #boot-hero {
+          top: 48px;
+        }
+      }
     </style>
     <link
       rel="preload"
@@ -112,11 +139,89 @@
       crossorigin
     />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="ai-catalog" href="/ai-catalog.json" />
   </head>
   <body>
     <main id="app-viewport">
+      <div id="boot-hero" aria-hidden="true">
+        <img
+          src="/img/my-pic-768.webp"
+          srcset="
+            /img/my-pic-384.webp   384w,
+            /img/my-pic-768.webp   768w,
+            /img/my-pic-1024.webp 1024w
+          "
+          sizes="(min-width: 1280px) 496px, (min-width: 640px) 45vw, 100vw"
+          width="768"
+          height="768"
+          alt=""
+          fetchpriority="high"
+          decoding="async"
+        />
+      </div>
       <app-root></app-root>
     </main>
+    <script>
+      (function () {
+        var boot = document.getElementById("boot-hero");
+        var path = location.pathname;
+        if (path !== "/" && path !== "/home") {
+          boot.remove();
+          return;
+        }
+        var remove = function () {
+          if (boot.isConnected) boot.remove();
+        };
+        var decoded = function (img) {
+          if (!img) return Promise.resolve();
+          if (img.complete && img.naturalWidth) return Promise.resolve();
+          if (img.decode) return img.decode().catch(function () {});
+          return new Promise(function (res) {
+            img.onload = img.onerror = res;
+          });
+        };
+        var raf3 = function () {
+          return new Promise(function (res) {
+            requestAnimationFrame(function () {
+              requestAnimationFrame(function () {
+                requestAnimationFrame(res);
+              });
+            });
+          });
+        };
+        var bootImg = boot.querySelector("img");
+        var heroImgReady = function () {
+          return new Promise(function (res) {
+            var tries = 0;
+            var check = function () {
+              var hero = document.querySelector("sec-hero");
+              var img =
+                hero && hero.shadowRoot && hero.shadowRoot.querySelector("img");
+              if (img) {
+                decoded(img).then(function () {
+                  res();
+                });
+                return;
+              }
+              if (tries++ > 60) {
+                res();
+                return;
+              }
+              requestAnimationFrame(check);
+            };
+            check();
+          });
+        };
+        Promise.all([
+          decoded(bootImg),
+          customElements.whenDefined("sec-hero"),
+        ])
+          .then(heroImgReady)
+          .then(raf3)
+          .then(remove);
+        setTimeout(remove, 5000);
+      })();
+    </script>
     <script type="module" src="/src/app.ts"></script>
   </body>
 </html>

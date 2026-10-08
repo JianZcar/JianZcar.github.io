@@ -2,6 +2,7 @@ import type { Builder } from "@converse/headless";
 import { css, html, LitElement, render } from "lit";
 import { customElement } from "lit/decorators.js";
 
+import { loadConverse } from "../lib/converse";
 import { SCROLLBAR_STYLES } from "./scrollbar";
 
 type ConverseModule = typeof import("@converse/headless").default;
@@ -440,7 +441,11 @@ export class Chat extends LitElement {
     const self = this;
 
     try {
-      converseModule ??= (await import("@converse/headless")).default;
+      if (!converseModule) {
+        converseModule = await loadConverse();
+        // Yield once more so plugin initialization runs as its own task.
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      }
 
       const converse = getConverse();
 
@@ -466,24 +471,32 @@ export class Chat extends LitElement {
 
             self._connection.addHandler(self._handlePresence, null, "presence");
 
-            self._connection.send(
-              converse.env.$pres({
-                to: PERSONAL_JID,
-                type: "subscribe",
-              }),
-            );
+            // Registering handlers must be synchronous (messages can arrive
+            // immediately), but presence, UI updates and the pending first
+            // message can wait for the next task to keep this task short.
+            setTimeout(() => {
+              const connection = self._connection;
+              if (!connection) return;
 
-            self._connection.send(converse.env.$pres());
+              connection.send(
+                converse.env.$pres({
+                  to: PERSONAL_JID,
+                  type: "subscribe",
+                }),
+              );
 
-            self._input.disabled = false;
-            self._send.disabled = false;
+              connection.send(converse.env.$pres());
 
-            self._setStatus("Offline · Usually replies in <1 hr");
+              self._input.disabled = false;
+              self._send.disabled = false;
 
-            if (self._pendingFirstMessage) {
-              self._sendFirstMessage(self._pendingFirstMessage);
-              self._pendingFirstMessage = null;
-            }
+              self._setStatus("Offline · Usually replies in <1 hr");
+
+              if (self._pendingFirstMessage) {
+                self._sendFirstMessage(self._pendingFirstMessage);
+                self._pendingFirstMessage = null;
+              }
+            }, 0);
           });
 
           api.listen.on("disconnected", () => {
