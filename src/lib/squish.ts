@@ -33,7 +33,9 @@ const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 function squishTarget(event: Event): HTMLElement | null {
   const [first] = event.composedPath();
   if (!(first instanceof Element)) return null;
-  return first.closest<HTMLElement>("button.squish");
+  return first.closest<HTMLElement>(
+    "button.squish, div.squish, a.squish, span.squish",
+  );
 }
 
 function computedTransform(el: HTMLElement): string {

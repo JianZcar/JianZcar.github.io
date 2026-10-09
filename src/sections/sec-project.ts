@@ -93,7 +93,7 @@ export class SecProject extends LitElement {
   private _renderStat(stat: ResolvedStat) {
     return html`
       <span
-        class="inline-flex items-center gap-1 rounded-full border border-white/70 bg-white/50 px-2.5 py-1 text-[11px] font-medium text-[#315659] shadow-[0_8px_24px_rgba(37,48,49,0.08)]"
+        class="squish inline-flex items-center gap-1 rounded-full border border-white/70 bg-white/50 px-2.5 py-1 text-[11px] font-medium text-[#315659] shadow-[0_8px_24px_rgba(37,48,49,0.08)]"
         title="${stat.label}"
       >
         ${STAT_ICON[stat.kind]}
@@ -105,7 +105,7 @@ export class SecProject extends LitElement {
   private _renderProject(project: Project) {
     return html`
       <article
-        class="group overflow-hidden rounded-3xl border border-white/75 bg-white/40 shadow-[0_20px_60px_rgba(37,48,49,0.14)] backdrop-blur-2xl"
+        class="group overflow-hidden flex flex-col rounded-3xl border border-white/75 bg-white/40 shadow-[0_20px_60px_rgba(37,48,49,0.14)]"
       >
         <div class="relative h-48 overflow-hidden">
           <img
@@ -127,11 +127,11 @@ export class SecProject extends LitElement {
           ></div>
         </div>
 
-        <div class="p-6 pt-0">
+        <div class="flex-1 flex flex-col p-6 pt-0">
           <h3 class="m-0 text-lg font-semibold text-[#253031]">
             ${project.name}
           </h3>
-          <p class="mt-2 text-sm leading-relaxed text-[#315659]/90">
+          <p class="mt-2 mb-auto text-sm leading-relaxed text-[#315659]/90">
             ${project.description}
           </p>
 
@@ -141,9 +141,25 @@ export class SecProject extends LitElement {
             )}
           </div>
 
-          <div class="mt-4">
+          <div class="mt-4 w-full flex justify-between">
+            ${
+              project.languages.length > 0
+                ? html`
+                    <div class="flex flex-wrap items-center gap-2">
+                      ${project.languages.map(
+                        (language) => html`
+                          <span
+                            class="squish inline-flex items-center rounded-full border border-white/60 bg-[#2978a0]/10 px-2.5 py-1 text-[11px] font-medium text-[#2978a0]"
+                            >${language}</span
+                          >
+                        `,
+                      )}
+                    </div>
+                  `
+                : nothing
+            }
             <a
-              class="squish inline-flex min-h-9 items-center gap-1.5 rounded-full border border-white/70 bg-white/50 px-3 text-[11px] font-medium text-[#315659] shadow-[0_8px_24px_rgba(37,48,49,0.08)] backdrop-blur-xl transition-colors duration-200 hover:bg-white/70 focus-visible:outline-2 focus-visible:outline-[#2978a0]/50 focus-visible:outline-offset-2"
+              class="squish inline-flex items-center gap-1.5  min-h-9 rounded-full border border-white/70 bg-white/50 px-3 text-[11px] font-medium text-[#315659] shadow-[0_8px_24px_rgba(37,48,49,0.08)] transition-colors duration-200 hover:bg-white/70 focus-visible:outline-2 focus-visible:outline-[#2978a0]/50 focus-visible:outline-offset-2"
               href="${project.repoUrl}"
               target="_blank"
               rel="noopener noreferrer"
@@ -152,23 +168,6 @@ export class SecProject extends LitElement {
               <span>Open repository</span>
             </a>
           </div>
-
-          ${
-            project.languages.length > 0
-              ? html`
-                  <div class="mt-3 flex flex-wrap items-center gap-2">
-                    ${project.languages.map(
-                      (language) => html`
-                        <span
-                          class="inline-flex items-center rounded-full border border-white/60 bg-[#2978a0]/10 px-2.5 py-1 text-[11px] font-medium text-[#2978a0]"
-                          >${language}</span
-                        >
-                      `,
-                    )}
-                  </div>
-                `
-              : nothing
-          }
         </div>
       </article>
     `;
