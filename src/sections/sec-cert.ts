@@ -367,7 +367,7 @@ export class SecCert extends LitElement {
         >
           <button
             type="button"
-            class="inline-flex min-h-10 cursor-pointer items-center justify-center gap-1.5 rounded-full border px-4 text-xs font-medium tracking-[0.08em] uppercase shadow-[0_12px_35px_rgba(37,48,49,0.1)] backdrop-blur-2xl transition-colors duration-300 ease-out hover:border-white/85 hover:bg-white/70 hover:text-[#253031]/90 active:bg-white/80 focus-visible:outline-2 focus-visible:outline-[#2978a0]/50 focus-visible:outline-offset-2 motion-reduce:transition-none ${toggleTone}"
+            class="squish inline-flex min-h-10 cursor-pointer items-center justify-center gap-1.5 rounded-full border px-4 text-xs font-medium tracking-[0.08em] uppercase shadow-[0_12px_35px_rgba(37,48,49,0.1)] transition-colors duration-300 ease-out hover:border-white/85 hover:bg-white/70 hover:text-[#253031]/90 active:bg-white/80 focus-visible:outline-2 focus-visible:outline-[#2978a0]/50 focus-visible:outline-offset-2 motion-reduce:transition-none ${toggleTone}"
             aria-expanded="${open}"
             @click="${this._toggle}"
           >
