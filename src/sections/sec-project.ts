@@ -47,8 +47,8 @@ const STAT_ICON: Record<ResolvedStat["kind"], unknown> = {
 
 const GITHUB = html`
   <svg
-    width="1em"
-    height="1em"
+    width="2em"
+    height="2em"
     viewBox="0 0 24 24"
     fill="currentColor"
     aria-hidden="true"
