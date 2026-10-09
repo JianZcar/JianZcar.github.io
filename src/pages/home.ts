@@ -3,6 +3,7 @@ import { customElement } from "lit/decorators.js";
 
 import "../sections/sec-hero";
 import "../sections/sec-project";
+import "../sections/sec-cta";
 type IdleWindow = Window & {
   requestIdleCallback?: (
     callback: () => void,
@@ -71,6 +72,7 @@ export class PageHome extends LitElement {
       <sec-hero></sec-hero>
       <sec-cert></sec-cert>
       <sec-project></sec-project>
+      <sec-cta></sec-cta>
     `;
   }
 }

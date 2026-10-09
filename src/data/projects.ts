@@ -43,7 +43,7 @@ export const PROJECTS: Project[] = [
     name: "FuzPad",
     image: "/img/fuzpad",
     description:
-      "a minimalistic, command-line note management tool written in bash script and powered by the fuzzy finder fzf.",
+      "A minimalistic, TUI note management tool written in bash script and powered by fzf.",
     stats: [
       { kind: "stars", value: 165 },
       {
