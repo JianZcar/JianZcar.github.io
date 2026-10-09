@@ -20,6 +20,7 @@ export type Project = {
   description: string;
   stats: ProjectStat[];
   languages: string[];
+  repoUrl: string;
 };
 
 export const PROJECTS: Project[] = [
@@ -36,6 +37,7 @@ export const PROJECTS: Project[] = [
       },
     ],
     languages: ["Bash", "Python"],
+    repoUrl: "https://github.com/Zena-Linux/Zena",
   },
   {
     name: "FuzPad",
@@ -43,12 +45,13 @@ export const PROJECTS: Project[] = [
     description:
       "a minimalistic, command-line note management tool written in bash script and powered by the fuzzy finder fzf.",
     stats: [
-      { kind: "stars", value: 147 },
+      { kind: "stars", value: 165 },
       {
         kind: "downloads",
         value: 684 + 225,
       },
     ],
     languages: ["Bash"],
+    repoUrl: "https://github.com/JianZcar/FuzPad",
   },
 ];

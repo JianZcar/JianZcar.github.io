@@ -45,6 +45,20 @@ const STAT_ICON: Record<ResolvedStat["kind"], unknown> = {
   downloads: PULL,
 };
 
+const GITHUB = html`
+  <svg
+    width="1em"
+    height="1em"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    aria-hidden="true"
+  >
+    <path
+      d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48 0-.24 0-.87 0-1.7-2.78.61-3.37-1.34-3.37-1.34-.45-1.15-1.11-1.46-1.11-1.46-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.95 0-1.09.39-1.99 1.03-2.69-.1-.26-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.03a9.56 9.56 0 0 1 2.5-.34 9.56 9.56 0 0 1 2.5.34c1.91-1.3 2.75-1.03 2.75-1.03.55 1.38.2 2.39.1 2.65.64.7 1.03 1.6 1.03 2.69 0 3.85-2.34 4.7-4.57 4.95.36.31.68.92.68 1.85 0 1.33 0 2.4 0 2.73 0 .27.18.58.69.48A10 10 0 0 0 12 2Z"
+    />
+  </svg>
+`;
+
 @customElement("sec-project")
 export class SecProject extends LitElement {
   private _projects: Project[] = [...PROJECTS];
@@ -125,6 +139,18 @@ export class SecProject extends LitElement {
             ${(this._stats.get(project.name) ?? []).map((stat) =>
               this._renderStat(stat),
             )}
+          </div>
+
+          <div class="mt-4">
+            <a
+              class="squish inline-flex min-h-9 items-center gap-1.5 rounded-full border border-white/70 bg-white/50 px-3 text-[11px] font-medium text-[#315659] shadow-[0_8px_24px_rgba(37,48,49,0.08)] backdrop-blur-xl transition-colors duration-200 hover:bg-white/70 focus-visible:outline-2 focus-visible:outline-[#2978a0]/50 focus-visible:outline-offset-2"
+              href="${project.repoUrl}"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              ${GITHUB}
+              <span>Open repository</span>
+            </a>
           </div>
 
           ${
