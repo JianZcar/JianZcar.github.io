@@ -8,16 +8,17 @@
       "identifier": "urn:air:jianzcar:site:portfolio",
       "displayName": "JianZcar Portfolio Catalog",
       "type": "application/ai-catalog+json",
-      "description": "Portfolio and certification catalog for JianZcar, a Systems Software and Infrastructure Engineer.",
+      "description": "Portfolio for JianZcar, a developer who builds software and the systems that bring it into production: application development, delivery automation, and Linux infrastructure.",
       "representativeQueries": [
         "Who is JianZcar?",
-        "What does JianZcar build?",
-        "What certifications does JianZcar have?"
+        "What projects has JianZcar built?",
+        "What certifications does JianZcar have?",
+        "How can I contact JianZcar?"
       ],
       "data": {
-        "site": "https://jianzcar.github.io",
+        "site": "https://www.jianzcar.com.de",
         "kind": "portfolio",
-        "about": "Systems Software and Infrastructure Engineer portfolio with project highlights, engineering focus, and professional certifications."
+        "about": "Single-page portfolio with an introduction, HackerRank certifications, open-source projects (Zena Linux, FuzPad), and contact links."
       }
     }
   ]

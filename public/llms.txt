@@ -1,11 +1,26 @@
 # JianZcar
 
-> Systems Software and Infrastructure Engineer. I help projects and businesses turn complex technical problems into minimal, straightforward solutions.
+> Developer based in the Philippines who builds software and the systems that bring it into production: application development, delivery automation, and Linux infrastructure.
 
-JianZcar builds, automates, and deploys software and infrastructure for the web and beyond.
+Single-page portfolio. The home page introduces JianZcar, lists professional certifications and open-source projects, and ends with contact links and a live chat widget (XMPP).
 
 ## Pages
 
-- [Home](https://jianzcar.github.io/): Portfolio home with an introduction and engineering focus
-- [About](https://jianzcar.github.io/about): Background, experience, and how to get in touch
-- [Certificates](https://jianzcar.github.io/#certificates): Professional certifications and courses
+- [Home](https://www.jianzcar.com.de/): Hero intro, certifications, open-source projects, and contact
+- [About](https://www.jianzcar.com.de/about): Placeholder page, content not written yet
+
+## Projects
+
+- [Zena Linux](https://github.com/Zena-Linux/Zena): Bootc-based immutable Linux desktop with the Cachy kernel, Niri, MangoWC, and Dank Material Shell
+- [FuzPad](https://github.com/JianZcar/FuzPad): Minimalistic TUI note manager written in Bash and powered by fzf
+
+## Certifications
+
+- HackerRank Problem Solving (Basic)
+- HackerRank Python (Basic)
+- HackerRank REST API (Intermediate)
+
+## Contact
+
+- GitHub: https://github.com/jianzcar
+- Email: jian.zcar.defiant834@simplelogin.com
