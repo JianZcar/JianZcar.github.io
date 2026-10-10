@@ -140,7 +140,9 @@ export class SecHero extends LitElement {
                 projects that put these skills into practice.</span
               >
               <div class="md:absolute top-full mt-8 flex flex-col sm:text-lg ">
-                <div class="flex justify-center items-center text-#4fa3ab py-3">
+                <div
+                  class="flex justify-center items-center text-#4fa3ab py-3 hidden sm:block"
+                >
                   ${CONVERSATION}
                 </div>
                 <span class="italic">Let's connect.</span>
