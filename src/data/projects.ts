@@ -19,7 +19,7 @@ export type Project = {
   image: string;
   description: string;
   stats: ProjectStat[];
-  languages: string[];
+  technologies: string[];
   repoUrl: string;
 };
 
@@ -36,7 +36,7 @@ export const PROJECTS: Project[] = [
         value: 5078 + 2929,
       },
     ],
-    languages: ["Bash", "Python"],
+    technologies: ["Bash", "Python", "Container", "Linux", "Github Actions"],
     repoUrl: "https://github.com/Zena-Linux/Zena",
   },
   {
@@ -51,7 +51,7 @@ export const PROJECTS: Project[] = [
         value: 684 + 225,
       },
     ],
-    languages: ["Bash"],
+    technologies: ["Bash", "fzf", "Github Actions"],
     repoUrl: "https://github.com/JianZcar/FuzPad",
   },
 ];

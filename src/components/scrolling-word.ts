@@ -3,16 +3,14 @@ import { customElement } from "lit/decorators.js";
 import { keyed } from "lit/directives/keyed.js";
 
 const WORDS = [
-  "APP",
-  "INFRA",
-  "SOFTWARE",
   "SYSTEMS",
-  "LINUX",
-  "WEBSITE",
-  "AUTOMATION",
-  "WORKFLOW",
-  "CONTAINER",
-  "VISION",
+  "SOFTWARE",
+  "APPS",
+  "TOOLS",
+  "WORKFLOWS",
+  "INFRA",
+  "SERVERS",
+  "ENVIRONMENTS",
 ];
 
 const PERIOD = 2300;

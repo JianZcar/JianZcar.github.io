@@ -49,7 +49,7 @@ export class SecCta extends LitElement {
 
           <div class="flex flex-wrap items-center justify-center gap-3">
             <a
-              class="squish inline-flex min-h-11 items-center gap-2 rounded-full border border-white/75 bg-white/60 px-6 text-sm font-medium text-[#253031]/90 shadow-[0_12px_35px_rgba(37,48,49,0.1)] backdrop-blur-2xl transition-colors duration-300 ease-out hover:border-white/85 hover:bg-white/70 active:bg-white/80 focus-visible:outline-2 focus-visible:outline-[#2978a0]/50 focus-visible:outline-offset-2 motion-reduce:transition-none"
+              class="squish inline-flex min-h-11 items-center gap-2 rounded-full border border-white/75 bg-white/40 px-6 text-sm font-medium text-[#253031]/90 shadow-[0_12px_35px_rgba(37,48,49,0.1)] backdrop-blur-2xl transition-colors duration-300 ease-out hover:border-white/85 hover:bg-white/70 active:bg-white/80 focus-visible:outline-2 focus-visible:outline-[#2978a0]/50 focus-visible:outline-offset-2 motion-reduce:transition-none"
               href="https://github.com/jianzcar"
               target="_blank"
               rel="noopener noreferrer"
@@ -59,7 +59,7 @@ export class SecCta extends LitElement {
             </a>
 
             <a
-              class="squish inline-flex min-h-11 items-center gap-2 rounded-full border border-white/75 bg-white/60 px-6 text-sm font-medium text-[#253031]/90 shadow-[0_12px_35px_rgba(37,48,49,0.1)] backdrop-blur-2xl transition-colors duration-300 ease-out hover:border-white/85 hover:bg-white/70 active:bg-white/80 focus-visible:outline-2 focus-visible:outline-[#2978a0]/50 focus-visible:outline-offset-2 motion-reduce:transition-none"
+              class="squish inline-flex min-h-11 items-center gap-2 rounded-full border border-white/75 bg-white/40 px-6 text-sm font-medium text-[#253031]/90 shadow-[0_12px_35px_rgba(37,48,49,0.1)] backdrop-blur-2xl transition-colors duration-300 ease-out hover:border-white/85 hover:bg-white/70 active:bg-white/80 focus-visible:outline-2 focus-visible:outline-[#2978a0]/50 focus-visible:outline-offset-2 motion-reduce:transition-none"
               href="mailto:jian.zcar.defiant834@simplelogin.com"
             >
               ${MAIL}

@@ -143,14 +143,14 @@ export class SecProject extends LitElement {
 
           <div class="mt-4 w-full flex justify-between">
             ${
-              project.languages.length > 0
+              project.technologies.length > 0
                 ? html`
                     <div class="flex flex-wrap items-center gap-2">
-                      ${project.languages.map(
-                        (language) => html`
+                      ${project.technologies.map(
+                        (technology) => html`
                           <span
-                            class="squish inline-flex items-center rounded-full border border-white/60 bg-[#2978a0]/10 px-2.5 py-1 text-[11px] font-medium text-[#2978a0]"
-                            >${language}</span
+                            class="squish inline-flex items-center rounded-full border border-white/70 bg-sky-100 px-2.5 py-1 text-[11px] font-medium text-[#2978A0]"
+                            >${technology}</span
                           >
                         `,
                       )}
@@ -159,7 +159,7 @@ export class SecProject extends LitElement {
                 : nothing
             }
             <a
-              class="squish inline-flex items-center gap-1.5  min-h-9 rounded-full border border-white/70 bg-white/50 px-3 text-[11px] font-medium text-[#315659] shadow-[0_8px_24px_rgba(37,48,49,0.08)] transition-colors duration-200 hover:bg-white/70 focus-visible:outline-2 focus-visible:outline-[#2978a0]/50 focus-visible:outline-offset-2"
+              class="squish inline-flex items-center gap-1.5 h-9 shrink-0 rounded-full border border-white/70 bg-white/50 px-3 text-[11px] font-medium text-[#315659] shadow-[0_8px_24px_rgba(37,48,49,0.08)] transition-colors duration-200 hover:bg-white/70 focus-visible:outline-2 focus-visible:outline-[#2978a0]/50 focus-visible:outline-offset-2"
               href="${project.repoUrl}"
               target="_blank"
               rel="noopener noreferrer"

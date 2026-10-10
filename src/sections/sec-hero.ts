@@ -38,9 +38,7 @@ const CHEVRON = html`
 @customElement("sec-hero")
 export class SecHero extends LitElement {
   static override styles = css`
-    @unocss-placeholder
-
-    #scroll-hint {
+    @unocss-placeholder #scroll-hint {
       transition: opacity 500ms ease-out;
     }
 
@@ -121,7 +119,7 @@ export class SecHero extends LitElement {
               />
             </div>
             <div
-              class=" absolute px-16 flex flex-col gap-2 font-syncopate text-3xl sm:text-5xl mix-blend-multiply"
+              class=" absolute px-12 flex flex-col gap-2 font-syncopate text-3xl sm:text-5xl mix-blend-multiply"
             >
               <h1 class="text-#2978A0">BUILD</h1>
               <h1 class="text-#9AD5CA">AUTOMATE</h1>
@@ -132,16 +130,16 @@ export class SecHero extends LitElement {
               </h2>
             </div>
           </div>
-          <div class="px-16 flex flex-col justify-center">
+          <div class="px-12 flex flex-col justify-center">
             <div class="relative flex flex-col justify-center items-center">
               <span class="text-xs sm:text-sm line-height-loose"
-                >I'm <strong>JianZcar</strong>, a Systems Software &
-                Infrastructure Engineer. I help projects and businesses turn
-                complex technical problems into minimal, straightforward
-                solutions. Together, we build, automate, and deploy your
-                <strong>vision</strong></span
+                >I'm <strong>JianZcar</strong> a developer based in the
+                Philippines who builds software and the systems that bring it
+                into production. My work connects application development,
+                delivery automation, and Linux infrastructure, with open-source
+                projects that put these skills into practice.</span
               >
-              <div class="md:absolute top-full mt-12 flex flex-col sm:text-lg ">
+              <div class="md:absolute top-full mt-8 flex flex-col sm:text-lg ">
                 <div class="flex justify-center items-center text-#4fa3ab py-3">
                   ${CONVERSATION}
                 </div>
@@ -153,7 +151,7 @@ export class SecHero extends LitElement {
         </div>
         <div
           id="scroll-hint"
-          class="absolute inset-x-0 bottom-5 flex flex-col items-center gap-1 text-xs text-[#3f6165] select-none"
+          class="absolute inset-x-0 bottom-4 flex flex-col items-center gap-1 text-xs text-[#3f6165] select-none"
         >
           <span>Scroll to explore</span>
           ${CHEVRON}
