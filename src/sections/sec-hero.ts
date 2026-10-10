@@ -96,7 +96,7 @@ export class SecHero extends LitElement {
     return html`
       <section class="relative h-screen max-w-256 mx-auto">
         <div
-          class="pt-6 sm:pt-12 md:pt-24 grid md:grid-cols-2 grid-row-2 md:gap-8"
+          class="pt-0 sm:pt-12 md:pt-24 grid md:grid-cols-2 grid-row-2 md:gap-8"
         >
           <div class="relative flex flex-col justify-center">
             <div
