@@ -141,7 +141,7 @@ export class SecHero extends LitElement {
               >
               <div class="md:absolute top-full mt-8 flex flex-col sm:text-lg ">
                 <div
-                  class="flex justify-center items-center text-#4fa3ab py-3 hidden sm:block"
+                  class="justify-center items-center text-#4fa3ab py-3 hidden sm:flex"
                 >
                   ${CONVERSATION}
                 </div>
