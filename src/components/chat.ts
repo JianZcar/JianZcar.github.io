@@ -27,7 +27,8 @@ type ChatConnection = {
     handler: (stanza: Element) => boolean,
     ns: string | null,
     name: string | null,
-  ) => void;
+  ) => unknown;
+  deleteHandler?: (handler: unknown) => void;
 };
 
 type ConverseApi = {
@@ -145,6 +146,8 @@ export class Chat extends LitElement {
   private _initialized = false;
   private _initializing = false;
   private _visitor: Visitor | null = null;
+
+  private _handlers: { message?: unknown; presence?: unknown } = {};
 
   private _chat!: HTMLElement;
   private _minimizedButton!: HTMLButtonElement;
@@ -457,51 +460,95 @@ export class Chat extends LitElement {
         }) {
           const api = this._converse.api;
 
-          api.listen.on("connected", () => {
-            self._connection = api.connection.get();
+          // Re-register our stanza handlers on the active connection. Strophe
+          // drops handlers whenever a connection is reset, so this runs on both
+          // fresh connections and reconnects.
+          const registerHandlers = (connection: ChatConnection) => {
+            const previous = self._handlers;
 
-            if (!self._connection) {
+            if (previous.message) connection.deleteHandler?.(previous.message);
+
+            if (previous.presence) connection.deleteHandler?.(previous.presence);
+
+            self._handlers = {
+              message: connection.addHandler(
+                self._handleMessage,
+                null,
+                "message",
+              ),
+              presence: connection.addHandler(
+                self._handlePresence,
+                null,
+                "presence",
+              ),
+            };
+          };
+
+          const onEstablished = (reconnecting: boolean) => {
+            const connection = api.connection.get();
+
+            self._connection = connection;
+
+            if (!connection) {
               self._setStatus("Connection failed");
               return;
             }
 
             self._connected = true;
 
-            self._connection.addHandler(self._handleMessage, null, "message");
-
-            self._connection.addHandler(self._handlePresence, null, "presence");
+            registerHandlers(connection);
 
             // Registering handlers must be synchronous (messages can arrive
             // immediately), but presence, UI updates and the pending first
             // message can wait for the next task to keep this task short.
             setTimeout(() => {
-              const connection = self._connection;
-              if (!connection) return;
+              const active = self._connection;
+              if (!active) return;
 
-              connection.send(
+              active.send(
                 converse.env.$pres({
                   to: PERSONAL_JID,
                   type: "subscribe",
                 }),
               );
 
-              connection.send(converse.env.$pres());
+              active.send(converse.env.$pres());
 
               self._input.disabled = false;
               self._send.disabled = false;
 
               self._setStatus("Offline · Usually replies in <1 hr");
 
-              if (self._pendingFirstMessage) {
+              // Only send the staged first message on the initial connection.
+              if (!reconnecting && self._pendingFirstMessage) {
                 self._sendFirstMessage(self._pendingFirstMessage);
                 self._pendingFirstMessage = null;
               }
             }, 0);
+          };
+
+          api.listen.on("connected", () => onEstablished(false));
+
+          // With SMACKS + auto_reconnect the connection is restored and the
+          // same JID resumed, but Converse emits `reconnected` instead of
+          // `connected`, so we have to wire the UI back up.
+          api.listen.on("reconnected", () => onEstablished(true));
+
+          api.listen.on("will-reconnect", () => {
+            self._connected = false;
+
+            self._input.disabled = true;
+            self._send.disabled = true;
+
+            self._typing.classList.add("hidden");
+
+            self._setStatus("Reconnecting...");
           });
 
           api.listen.on("disconnected", () => {
             self._connected = false;
             self._connection = null;
+            self._handlers = {};
 
             self._input.disabled = true;
             self._send.disabled = true;
@@ -519,13 +566,13 @@ export class Chat extends LitElement {
         auto_login: true,
         websocket_url: XMPP_WS,
         discover_connection_methods: false,
-        auto_reconnect: false,
+        auto_reconnect: true,
         clear_cache: true,
 
         allow_non_roster_messaging: true,
         auto_subscribe: true,
 
-        enable_smacks: false,
+        enable_smacks: true,
         send_chat_state_notifications: false,
 
         show_controlbox_by_default: false,
@@ -541,7 +588,6 @@ export class Chat extends LitElement {
           "converse-omemo",
           "converse-emoji",
           "converse-sm",
-          "converse-smacks",
         ],
       });
 
