@@ -135,7 +135,7 @@ export class SecHero extends LitElement {
         </div>
         <div
           id="scroll-hint"
-          class="absolute inset-x-0 bottom-4 flex flex-col items-center gap-1 text-xs text-[#3f6165] select-none"
+          class="absolute inset-x-0 bottom-4 hidden sm:flex flex-col items-center gap-1 text-xs text-[#3f6165] select-none"
         >
           <span>Scroll to explore</span>
           ${CHEVRON}
