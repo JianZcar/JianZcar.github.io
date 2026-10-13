@@ -1,23 +1,8 @@
 import { css, html, LitElement } from "lit";
 import { customElement } from "lit/decorators.js";
 
+import "../components/cta-buttons";
 import "../components/scrolling-word";
-
-const CONVERSATION = html`
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="2em"
-    height="2em"
-    viewBox="0 0 12 12"
-  >
-    <path d="M0 0h12v12H0z" fill="none" />
-    <path
-      fill="none"
-      stroke="currentColor"
-      d="M6 .5H2C1.2.5.5 1.2.5 2c0 .6.4 1.2 1 1.4v1.9c0 .4.5.7.9.3l2.1-2.1H6c.8 0 1.5-.7 1.5-1.5S6.8.5 6 .5zm0 5h4c.8 0 1.5.7 1.5 1.5c0 .6-.4 1.2-1 1.4v1.9c0 .4-.5.7-.9.4L7.5 8.5H6c-.8 0-1.5-.7-1.5-1.5S5.2 5.5 6 5.5z"
-    />
-  </svg>
-`;
 
 const CHEVRON = html`
   <svg
@@ -139,14 +124,11 @@ export class SecHero extends LitElement {
                 delivery automation, and Linux infrastructure, with open-source
                 projects that put these skills into practice.</span
               >
-              <div class="md:absolute top-full mt-8 flex flex-col sm:text-lg ">
-                <div
-                  class="justify-center items-center text-#4fa3ab py-3 hidden sm:flex"
-                >
-                  ${CONVERSATION}
-                </div>
+              <div
+                class="md:absolute top-full mt-8 flex flex-col items-center gap-3 sm:text-lg"
+              >
                 <span class="italic">Let's connect.</span>
-                <span>Chat with me.</span>
+                <el-cta-buttons></el-cta-buttons>
               </div>
             </div>
           </div>
